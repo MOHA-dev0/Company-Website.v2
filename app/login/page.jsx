@@ -1,12 +1,13 @@
 "use client";
 import { useState } from "react";
-import { account, ID } from "@/app/utils/appwrite";
+import { account, ID, teams } from "@/app/utils/appwrite";
 import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+
   const router = useRouter();
 
   const login = async () => {
@@ -18,8 +19,12 @@ const LoginPage = () => {
       try {
         await account.createEmailPasswordSession(email, password);
         const user = await account.get();
-        console.log("Login successful", user);
-        router.push(`/user/${user.$id}`);
+        const userTeams = await teams.list();
+        if (userTeams.teams.some((team) => team.name === "Admins")) {
+          router.push(`/adminpanel/${user.$id}`);
+        } else {
+          router.push(`/user/${user.$id}`);
+        }
       } catch (loginError) {
         setError("Invalid email or password");
         console.error("Login failed:", loginError);

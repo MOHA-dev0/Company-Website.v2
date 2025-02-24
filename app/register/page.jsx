@@ -14,7 +14,7 @@ const RegisterPage = () => {
   async function register() {
     try {
       await account.create(ID.unique(), name, email, password);
-      router.push(`/user/${ID}`);
+      router.push(`/profile/${ID}`);
       console.log("Registration successful");
     } catch (e) {
       console.error(e);

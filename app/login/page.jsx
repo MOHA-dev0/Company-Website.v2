@@ -14,16 +14,16 @@ const LoginPage = () => {
     try {
       const user = await account.get();
       console.log("User already logged in:", user);
-      router.push(`/user/${user.$id}`);
+      router.push(`/profile/${user.$id}`);
     } catch (error) {
       try {
         await account.createEmailPasswordSession(email, password);
         const user = await account.get();
         const userTeams = await teams.list();
         if (userTeams.teams.some((team) => team.name === "Admins")) {
-          router.push(`/adminpanel/${user.$id}`);
+          router.push(`/admin`);
         } else {
-          router.push(`/user/${user.$id}`);
+          router.push(`/profile/${user.$id}`);
         }
       } catch (loginError) {
         setError("Invalid email or password");

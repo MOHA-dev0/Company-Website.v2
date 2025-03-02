@@ -12,23 +12,36 @@ const LoginPage = () => {
 
   const login = async () => {
     try {
-      const user = await account.get();
-      console.log("User already logged in:", user);
-      router.push(`/profile/${user.$id}`);
-    } catch (error) {
+      let user = null;
+
       try {
+        user = await account.get();
+        console.log("User already logged in:", user);
+      } catch {
         await account.createEmailPasswordSession(email, password);
-        const user = await account.get();
-        const userTeams = await teams.list();
-        if (userTeams.teams.some((team) => team.name === "Admins")) {
-          router.push(`/admin`);
-        } else {
-          router.push(`/profile/${user.$id}`);
-        }
-      } catch (loginError) {
-        setError("Invalid email or password");
-        console.error("Login failed:", loginError);
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        user = await account.get();
       }
+
+      console.log("Logged in user:", user);
+
+      let userTeams = null;
+      for (let i = 0; i < 3; i++) {
+        userTeams = await teams.list();
+        if (userTeams.teams.length > 0) break;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+
+      console.log("User teams:", userTeams.teams);
+
+      if (userTeams.teams.some((team) => team.name === "Admins")) {
+        router.push(`/admin`);
+      } else {
+        router.push(`/profile/${user.$id}`);
+      }
+    } catch (loginError) {
+      setError("Invalid email or password");
+      console.error("Login failed:", loginError);
     }
   };
 

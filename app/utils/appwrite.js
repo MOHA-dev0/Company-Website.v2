@@ -1,4 +1,12 @@
-import { Client, Databases, Account, ID, Teams, Storage } from "appwrite";
+import {
+  Client,
+  Databases,
+  Account,
+  ID,
+  Teams,
+  Storage,
+  Query,
+} from "appwrite";
 
 const client = new Client();
 
@@ -12,7 +20,7 @@ const storage = new Storage(client);
 
 export { client, database, account, ID, teams, Storage };
 
-export async function publishPost(title, description, image) {
+export async function publishPost({ title, description, image }) {
   try {
     if (!description) {
       throw new Error("All fields (description) are required.");

@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { publishPost, uploadImage } from "@/app/utils/appwrite";
+import { db } from "@/app/utils/database";
 import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
 export default function CreateNewPost() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState("");
+  const router = useRouter();
 
   const handleImageChange = (file) => {
     if (file && file.type.startsWith("image/")) {
@@ -56,7 +59,7 @@ export default function CreateNewPost() {
         throw new Error("All fields (description) are required");
       }
 
-      const response = await publishPost({
+      const response = await db.posts.create({
         title: title,
         description: description,
         image: imageUrl,
@@ -64,6 +67,7 @@ export default function CreateNewPost() {
 
       console.log("Post published successfully:", response);
       alert("Post published successfully!");
+      Router.push("/admin");
     } catch (error) {
       console.error("Failed to publish post:", error.message);
       alert("Failed to publish post: " + error.message);

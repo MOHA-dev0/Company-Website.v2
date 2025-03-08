@@ -7,11 +7,15 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { db } from "@/app/utils/database";
+import { account, ID, teams } from "@/app/utils/appwrite";
+import Link from "next/link";
 
 export default function Cards() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     async function fetchPosts() {
@@ -26,6 +30,23 @@ export default function Cards() {
     }
 
     fetchPosts();
+  }, []);
+
+  useEffect(() => {
+    async function checkAdmin() {
+      try {
+        const user = await account.get();
+        const userTeams = await teams.list();
+
+        if (userTeams.teams.some((team) => team.name === "Admins")) {
+          setIsAdmin(true);
+        }
+      } catch (error) {
+        console.error("Error checking admin status:", error);
+      }
+    }
+
+    checkAdmin();
   }, []);
 
   if (loading) {
@@ -54,6 +75,13 @@ export default function Cards() {
                 {post.description}
               </CardDescription>
             </CardContent>
+            {isAdmin && (
+              <CardContent>
+                <Button>
+                  <Link href={`/posts/${post.$id}`}>Edit</Link>
+                </Button>
+              </CardContent>
+            )}
           </Card>
         ))
       ) : (

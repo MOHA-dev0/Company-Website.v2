@@ -1,87 +1,65 @@
-import { useState } from "react";
-import { publishPost, uploadImage } from "@/app/utils/appwrite";
+"use client";
+import { useEffect, useState } from "react";
+import { uploadImage } from "@/app/utils/appwrite";
 import { db } from "@/app/utils/database";
-import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { useRouter, useParams } from "next/navigation";
 
-export default function CreateNewPost() {
+export default function page() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState("");
+  const [preview, setPreview] = useState(null);
   const router = useRouter();
+  const params = useParams();
 
-  const handleImageChange = (file) => {
-    if (file && file.type.startsWith("image/")) {
-      setImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setPreview(reader.result);
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleFileInput = (e) => {
+  async function handleFileInput(e) {
     const file = e.target.files[0];
-    handleImageChange(file);
-  };
+    setImage(file);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+  }
+  useEffect(() => {
+    if (!params || !params.id) return;
+    db.posts.get(params.id).then((post) => {
+      setTitle(post.title);
+      setDescription(post.description);
+      setPreview(post.image);
+    });
+  }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  async function handleUpdate() {
     try {
-      let imageUrl = "";
+      await db.posts.update(params.id, { title, description });
 
       if (image) {
-        const uploadResponse = await uploadImage(image);
-
-        if (!uploadResponse || !uploadResponse.$id) {
-          throw new Error("Image upload failed");
-        }
-
-        console.log("Uploaded Image ID:", uploadResponse.$id);
-        imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/67c473c5000b71ec23e0/files/${uploadResponse.$id}/view?project=67b9cb2500144405cbac&mode=admin`;
-      } else {
-        throw new Error("Image is required, please upload an image.");
+        const uploadedImage = await uploadImage(image);
+        await db.posts.update(params.id, { image: uploadedImage });
       }
-
-      console.log("Image uploaded successfully:", imageUrl);
-
-      if (!imageUrl) {
-        throw new Error("Image URL is empty, upload failed.");
-      }
-      if (!description.trim()) {
-        throw new Error(
-          "Description cannot be empty, please provide a description."
-        );
-      }
-
-      if (!description) {
-        throw new Error("All fields (description) are required");
-      }
-
-      const response = await db.posts.create({
-        title: title,
-        description: description,
-        image: imageUrl,
-      });
-
-      console.log("Post published successfully:", response);
-      alert("Post published successfully!");
-      router.push("/admin");
+      alert("Post Updated Successfully");
+      router.push(`/admin`);
     } catch (error) {
-      console.error("Failed to publish post:", error.message);
-      alert("Failed to publish post: " + error.message);
+      console.error("Error updating post:", error);
     }
-  };
+  }
+  async function HandelDelete() {
+    try {
+      await db.posts.delete(params.id);
+      alert("Post Deleted Successfully");
+      router.push(`/admin`);
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-2xl bg-white rounded-xl shadow-2xl p-8 space-y-6 transition-all duration-300 hover:shadow-3xl"
-      >
+      <form className="w-full max-w-2xl bg-white rounded-xl shadow-2xl p-8 space-y-6 transition-all duration-300 hover:shadow-3xl">
         <h1 className="text-3xl font-bold text-gray-900 text-center mb-8">
-          Create New Post
+          Edit Post
         </h1>
 
         <div className="space-y-2">
@@ -144,10 +122,16 @@ export default function CreateNewPost() {
         </div>
 
         <Button
-          type="submit"
+          onClick={handleUpdate}
           className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-600 transition-all duration-300 transform hover:scale-[1.01] shadow-lg"
         >
-          Publish Post
+          Update
+        </Button>
+        <Button
+          onClick={HandelDelete}
+          className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-600 transition-all duration-300 transform hover:scale-[1.01] shadow-lg"
+        >
+          Delete
         </Button>
       </form>
     </div>

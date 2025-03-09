@@ -1,57 +1,51 @@
 "use client";
-import { useEffect, useState } from "react";
-import { uploadImage, deleteImage } from "@/app/utils/appwrite";
+import { useState, useEffect } from "react";
+import { uploadImage, account } from "@/app/utils/appwrite";
 import { db } from "@/app/utils/database";
 import { Button } from "@/components/ui/button";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-export default function page() {
+export default function CreateNewPost() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const [post, setPost] = useState(null);
-  const [imageId, setImageId] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
+  const [preview, setPreview] = useState("");
   const router = useRouter();
-  const params = useParams();
 
-  async function handleFileInput(e) {
-    const file = e.target.files[0];
-    setImage(file);
-    const reader = new FileReader();
-    reader.onload = () => {
-      setPreview(reader.result);
-    };
-    reader.readAsDataURL(file);
-  }
-  function extractImageId(url) {
-    // Assuming the URL contains the ID in a specific part
-    const parts = url.split("/");
-    return parts[parts.length - 2]; // Image ID is usually the second-to-last segment
-  }
-
+  // router protection
   useEffect(() => {
-    if (!params || !params.id) return;
+    const user = account.get();
 
-    db.posts.get(params.id).then((fetchedPost) => {
-      if (fetchedPost) {
-        setTitle(fetchedPost.title);
-        setDescription(fetchedPost.description);
-        setPreview(fetchedPost.image);
-        setPost(fetchedPost);
+    user.then(
+      (res) => {
+        setUserInfo(res);
+      },
+      (error) => {
+        router.push("/login");
       }
-      if (fetchedPost.image) {
-        const Id = extractImageId(fetchedPost.image);
-        setImageId(Id);
-      }
-    });
-  }, []);
+    );
+  }, [router]);
 
-  async function handleUpdate(e) {
+  const handleImageChange = (file) => {
+    if (file && file.type.startsWith("image/")) {
+      setImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => setPreview(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleFileInput = (e) => {
+    const file = e.target.files[0];
+    handleImageChange(file);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const updates = { title, description };
+      let imageUrl = "";
 
       if (image) {
         const uploadResponse = await uploadImage(image);
@@ -61,44 +55,49 @@ export default function page() {
         }
 
         console.log("Uploaded Image ID:", uploadResponse.$id);
-        const imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/67c473c5000b71ec23e0/files/${uploadResponse.$id}/view?project=67b9cb2500144405cbac&mode=admin`;
-
-        updates.image = imageUrl;
-
-        if (imageId) {
-          await deleteImage(imageId);
-        }
+        imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/67c473c5000b71ec23e0/files/${uploadResponse.$id}/view?project=67b9cb2500144405cbac&mode=admin`;
+      } else {
+        throw new Error("Image is required, please upload an image.");
       }
 
-      await db.posts.update(params.id, updates);
+      console.log("Image uploaded successfully:", imageUrl);
 
-      alert("Post updated successfully");
+      if (!imageUrl) {
+        throw new Error("Image URL is empty, upload failed.");
+      }
+      if (!description.trim()) {
+        throw new Error(
+          "Description cannot be empty, please provide a description."
+        );
+      }
+
+      if (!description) {
+        throw new Error("All fields (description) are required");
+      }
+
+      const response = await db.posts.create({
+        title: title,
+        description: description,
+        image: imageUrl,
+      });
+
+      console.log("Post published successfully:", response);
+      alert("Post published successfully!");
       router.push("/admin");
     } catch (error) {
-      console.error("Error updating post:", error);
-      alert("Failed to update post. Please try again.");
+      console.error("Failed to publish post:", error.message);
+      alert("Failed to publish post: " + error.message);
     }
-  }
-
-  async function HandelDelete() {
-    try {
-      if (imageId) {
-        await deleteImage(imageId);
-      }
-
-      await db.posts.delete(params.id);
-      alert("Post Deleted Successfully");
-      router.push(`/admin`);
-    } catch (error) {
-      console.error("Error deleting post:", error);
-    }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <form className="w-full max-w-2xl bg-white rounded-xl shadow-2xl p-8 space-y-6 transition-all duration-300 hover:shadow-3xl">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-2xl bg-white rounded-xl shadow-2xl p-8 space-y-6 transition-all duration-300 hover:shadow-3xl"
+      >
         <h1 className="text-3xl font-bold text-gray-900 text-center mb-8">
-          Edit Post
+          Create New Post
         </h1>
 
         <div className="space-y-2">
@@ -161,18 +160,10 @@ export default function page() {
         </div>
 
         <Button
-          type="button"
-          onClick={handleUpdate}
+          type="submit"
           className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-600 transition-all duration-300 transform hover:scale-[1.01] shadow-lg"
         >
-          Update
-        </Button>
-        <Button
-          type="button"
-          onClick={HandelDelete}
-          className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-600 transition-all duration-300 transform hover:scale-[1.01] shadow-lg"
-        >
-          Delete
+          Publish Post
         </Button>
       </form>
     </div>

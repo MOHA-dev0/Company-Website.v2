@@ -1,12 +1,4 @@
-import {
-  Client,
-  Databases,
-  Account,
-  ID,
-  Teams,
-  Storage,
-  Query,
-} from "appwrite";
+import { Client, Databases, Account, ID, Teams, Storage } from "appwrite";
 
 const client = new Client();
 
@@ -18,7 +10,7 @@ const account = new Account(client);
 const teams = new Teams(client);
 const storage = new Storage(client);
 
-export { client, database, account, ID, teams, Storage };
+export { client, database, account, ID, teams, storage };
 
 export async function publishPost({ title, description, image }) {
   try {
@@ -53,6 +45,38 @@ export async function uploadImage(file) {
     return response;
   } catch (error) {
     console.error("Failed to upload image:", error);
+    throw error;
+  }
+}
+
+export async function updateImage(oldfileId, newFile) {
+  try {
+    const bucketId = process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID;
+
+    if (oldfileId) {
+      await storage.deleteFile(bucketId, oldfileId);
+    }
+
+    const uploadedFile = await storage.createFile(
+      bucketId,
+      ID.unique(),
+      newFile
+    );
+    return uploadedFile.$id;
+  } catch (error) {
+    console.error("Failed to update image:", error);
+    throw error;
+  }
+}
+
+export async function deleteImage(imageId) {
+  try {
+    await storage.deleteFile(
+      process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID,
+      imageId
+    );
+  } catch (error) {
+    console.error("Failed to delete image:", error);
     throw error;
   }
 }

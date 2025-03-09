@@ -33,6 +33,10 @@ export default function AdminPage() {
     }
   };
 
+  function handleCreatePost() {
+    router.push("/CreateNewPost");
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
@@ -45,7 +49,7 @@ export default function AdminPage() {
             </p>
             <div className="flex items-center gap-4">
               <button
-                onClick={() => setIsCreating(!isCreating)}
+                onClick={handleCreatePost}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 shadow-md"
               >
                 ✨ Create New Post
@@ -66,8 +70,10 @@ export default function AdminPage() {
       </div>
 
       {/* Main Content */}
-      <div className="pt-24 px-6 py-4">{isCreating && <CreateNewPost />}</div>
-      <div className="pt-24 px-6 py-4">{!isCreating && <Cards />}</div>
+
+      <div className="pt-24 px-6 py-4">
+        <Cards />
+      </div>
     </div>
   );
 }

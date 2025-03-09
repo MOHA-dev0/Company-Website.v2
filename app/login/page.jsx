@@ -12,8 +12,7 @@ const LoginPage = () => {
 
   const login = async () => {
     try {
-      let user = null;
-
+      let user;
       try {
         user = await account.get();
         console.log("User already logged in:", user);

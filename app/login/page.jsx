@@ -15,14 +15,11 @@ const LoginPage = () => {
       let user;
       try {
         user = await account.get();
-        console.log("User already logged in:", user);
       } catch {
         await account.createEmailPasswordSession(email, password);
         await new Promise((resolve) => setTimeout(resolve, 500));
         user = await account.get();
       }
-
-      console.log("Logged in user:", user);
 
       let userTeams = null;
       for (let i = 0; i < 3; i++) {
@@ -30,8 +27,6 @@ const LoginPage = () => {
         if (userTeams.teams.length > 0) break;
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
-
-      console.log("User teams:", userTeams.teams);
 
       if (userTeams.teams.some((team) => team.name === "Admins")) {
         router.push(`/admin`);

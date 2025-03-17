@@ -59,7 +59,6 @@ export default function page() {
           throw new Error("Image upload failed");
         }
 
-        console.log("Uploaded Image ID:", uploadResponse.$id);
         const imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/67c473c5000b71ec23e0/files/${uploadResponse.$id}/view?project=67b9cb2500144405cbac&mode=admin`;
 
         updates.image = imageUrl;

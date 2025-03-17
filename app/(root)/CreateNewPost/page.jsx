@@ -54,13 +54,10 @@ export default function CreateNewPost() {
           throw new Error("Image upload failed");
         }
 
-        console.log("Uploaded Image ID:", uploadResponse.$id);
         imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/67c473c5000b71ec23e0/files/${uploadResponse.$id}/view?project=67b9cb2500144405cbac&mode=admin`;
       } else {
         throw new Error("Image is required, please upload an image.");
       }
-
-      console.log("Image uploaded successfully:", imageUrl);
 
       if (!imageUrl) {
         throw new Error("Image URL is empty, upload failed.");
@@ -81,7 +78,6 @@ export default function CreateNewPost() {
         image: imageUrl,
       });
 
-      console.log("Post published successfully:", response);
       alert("Post published successfully!");
       router.push("/admin");
     } catch (error) {

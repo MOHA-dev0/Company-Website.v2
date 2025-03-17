@@ -2,13 +2,11 @@
 import React, { useState, useEffect } from "react";
 import { account } from "@/app/utils/appwrite";
 import { useRouter } from "next/navigation";
-import CreateNewPost from "@/components/CreateNewPost";
 import Cards from "@/components/Cards";
 
 export default function AdminPage() {
   const router = useRouter();
   const [userInfo, setUserInfo] = useState(null);
-  const [isCreating, setIsCreating] = useState(false);
 
   // router protection
   useEffect(() => {

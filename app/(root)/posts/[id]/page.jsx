@@ -25,9 +25,8 @@ export default function page() {
     reader.readAsDataURL(file);
   }
   function extractImageId(url) {
-    // Assuming the URL contains the ID in a specific part
     const parts = url.split("/");
-    return parts[parts.length - 2]; // Image ID is usually the second-to-last segment
+    return parts[parts.length - 2];
   }
 
   useEffect(() => {

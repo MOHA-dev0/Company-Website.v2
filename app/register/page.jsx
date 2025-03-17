@@ -11,12 +11,30 @@ const RegisterPage = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   const router = useRouter();
 
+  function isValidEmail(email) {
+    return /\S+@\S+\.\S+/.test(email);
+  }
+
   async function register() {
+    setError(null);
+    setSuccessMessage(null);
+
+    if (!isValidEmail(email)) {
+      setError("Invalid email format. Please enter a valid email.");
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
+
     try {
-      await account.create(ID.unique(), name, email, password);
-      router.push(`/profile/${ID}`);
-      console.log("Registration successful");
+      await account.create(ID.unique(), email, password, name);
+      setSuccessMessage("Registration successful! Redirecting...");
+      setTimeout(() => router.push(`/profile/${ID}`), 2000);
     } catch (e) {
+      setError(e.message);
       console.error(e);
     }
   }

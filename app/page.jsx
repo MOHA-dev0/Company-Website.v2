@@ -1,6 +1,9 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+const LOGIN_BUTTON_TEXT = "Login";
+const REGISTER_BUTTON_TEXT = "Register";
+
 export default function Home() {
   return (
     <div className="flex items-center justify-center gap-4 h-screen bg-neutral-50">
@@ -10,7 +13,7 @@ export default function Home() {
                      hover:bg-blue-700 transition-colors shadow-sm
                      hover:shadow-md font-medium"
         >
-          Login
+          {LOGIN_BUTTON_TEXT}
         </Button>
       </Link>
       <Link href="/register">
@@ -20,7 +23,7 @@ export default function Home() {
                    transition-colors shadow-sm hover:shadow-md
                    font-medium hover:bg-blue-50"
         >
-          Register
+          {REGISTER_BUTTON_TEXT}
         </Button>
       </Link>
     </div>

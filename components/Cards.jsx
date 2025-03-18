@@ -12,6 +12,10 @@ import { db } from "@/app/utils/database";
 import { account, ID, teams } from "@/app/utils/appwrite";
 import Link from "next/link";
 
+const EDIT_LABEL = "Edit";
+const NOT_FOUND_LABEL = "No posts found.";
+const LODING_LABEL = "Loading...";
+
 export default function Cards() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +42,7 @@ export default function Cards() {
         const user = await account.get();
         const userTeams = await teams.list();
 
-        if (userTeams.teams.some((team) => team.name === "Admins")) {
+        if (userTeams.teams.some((team) => team.name === "admins")) {
           setIsAdmin(true);
         }
       } catch (error) {
@@ -50,7 +54,7 @@ export default function Cards() {
   }, []);
 
   if (loading) {
-    return <p className="text-center text-gray-600">Loading...</p>;
+    return <p className="text-center text-gray-600">{LODING_LABEL}</p>;
   }
 
   return (
@@ -78,14 +82,16 @@ export default function Cards() {
             {isAdmin && (
               <CardContent>
                 <Button>
-                  <Link href={`/posts/${post.$id}`}>Edit</Link>
+                  <Link href={`/posts/${post.$id}`}>{EDIT_LABEL}</Link>
                 </Button>
               </CardContent>
             )}
           </Card>
         ))
       ) : (
-        <p className="text-center col-span-3 text-gray-600">No posts found.</p>
+        <p className="text-center col-span-3 text-gray-600">
+          {NOT_FOUND_LABEL}
+        </p>
       )}
     </div>
   );

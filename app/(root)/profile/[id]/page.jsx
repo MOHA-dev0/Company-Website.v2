@@ -5,7 +5,7 @@ import Navbar from "@/components/NavBar";
 export default function UserPage() {
   return (
     <div className="">
-      <Navbar />
+      <Navbar admin={false} />
       <Cards />
     </div>
   );

@@ -3,23 +3,41 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { db } from "@/app/utils/database";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { account } from "@/app/utils/appwrite";
+import Link from "next/link";
 
-const LODING_LABEL = "Loading...";
+const LOADING_LABEL = "Loading...";
 const NOT_FOUND_LABEL = "Post not found.";
+const COMMENT_LABEL = "Comments";
+const SUMBMET_LABEL = "Submit";
+const NOT_FOUND_COMMENNTS_LABEL = "No comments found. Be the first to comment!";
 
 export default function PostDetail() {
   const { id } = useParams();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
-  const user = account.get();
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const userData = await account.get();
+        setUser(userData);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    }
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     async function fetchPost() {
       try {
         const response = await db.posts.get(id);
         setPost(response);
+        fetchComments(response.$id);
       } catch (error) {
         console.error("Error fetching post:", error);
       } finally {
@@ -27,11 +45,47 @@ export default function PostDetail() {
       }
     }
 
+    async function fetchComments(postId) {
+      try {
+        if (db.comments) {
+          const response = await db.comments.list(postId);
+          setComments(response.comments || []);
+        } else {
+          console.error("Comments collection is not available");
+        }
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    }
+
     fetchPost();
   }, [id]);
 
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+
+    try {
+      if (db.comments) {
+        const comment = await db.comments.create({
+          postId: post.$id,
+          userId: user.$id,
+          userName: user.name || "Anonymous",
+          content: newComment,
+        });
+
+        setComments((prevComments) => [...prevComments, comment]);
+        setNewComment("");
+      } else {
+        console.error("Comments collection is not available");
+      }
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+    }
+  };
+
   if (loading) {
-    return <p className="text-center text-gray-600">{LODING_LABEL}</p>;
+    return <p className="text-center text-gray-600">{LOADING_LABEL}</p>;
   }
 
   if (!post) {
@@ -65,12 +119,55 @@ export default function PostDetail() {
           <p>{post.description}</p>
         </div>
 
-        <div className="mt-12 text-center">
-          <Link href="/">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300">
-              Back to Posts
-            </Button>
-          </Link>
+        <div className="mt-12">
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">
+            {COMMENT_LABEL}
+          </h3>
+
+          {user ? (
+            <form onSubmit={handleCommentSubmit} className="mb-8">
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Write a comment..."
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows="4"
+              />
+              <Button type="submit" className="mt-4">
+                {SUMBMET_LABEL}
+              </Button>
+            </form>
+          ) : (
+            <p className="text-gray-600">
+              Please <Link href="/login">log in</Link> to leave a comment.
+            </p>
+          )}
+
+          <div className="space-y-4">
+            {comments.length > 0 ? (
+              comments.map((comment) => (
+                <div
+                  key={comment.$id}
+                  className="bg-white p-4 rounded-lg shadow-sm"
+                >
+                  <p className="text-gray-700">{comment.content}</p>
+                  <p className="text-sm text-gray-500 mt-2">
+                    By {comment.userName} on{" "}
+                    {new Date(comment.$createdAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      clock: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-600">{NOT_FOUND_COMMENNTS_LABEL}</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

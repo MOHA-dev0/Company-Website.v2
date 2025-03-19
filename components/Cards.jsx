@@ -58,7 +58,7 @@ export default function Cards() {
   }
 
   return (
-    <div className="flex flex-wrap gap-6 justify-start">
+    <div className="flex flex-wrap gap-4 justify-start">
       {posts.length > 0 ? (
         posts.map((post) => (
           <Card key={post.$id} className="w-80 shadow-lg rounded-2xl">
@@ -81,7 +81,7 @@ export default function Cards() {
             </CardContent>
             {isAdmin && (
               <CardContent>
-                <Button>
+                <Button className="px-2 py-1 text-sm">
                   <Link href={`/posts/${post.$id}`}>{EDIT_LABEL}</Link>
                 </Button>
               </CardContent>

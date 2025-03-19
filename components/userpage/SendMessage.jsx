@@ -29,7 +29,7 @@ export default function SendMessage() {
   }, []);
 
   const handleSendMessage = async (e) => {
-    e.preventDefault(); // يجب وضعه في الأعلى لمنع إعادة تحميل الصفحة
+    e.preventDefault();
 
     if (!username || !email || !message) {
       alert("Please fill in all required fields.");

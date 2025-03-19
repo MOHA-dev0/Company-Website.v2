@@ -4,41 +4,34 @@ import { account } from "@/app/utils/appwrite";
 import { useRouter } from "next/navigation";
 import Cards from "@/components/Cards";
 import Navbar from "@/components/NavBar";
+import ReciveMessage from "@/components/adminpage/ReciveMessage";
 
 export default function AdminPage() {
   const router = useRouter();
   const [userInfo, setUserInfo] = useState(null);
+  const [showMessages, setShowMessages] = useState(false); // New state
 
-  // router protection
   useEffect(() => {
     const user = account.get();
-
     user.then(
-      (res) => {
-        setUserInfo(res);
-      },
-      (error) => {
-        router.push("/login");
-      }
+      (res) => setUserInfo(res),
+      () => router.push("/login")
     );
   }, [router]);
 
-  const logout = async () => {
-    try {
-      await account.deleteSession("current");
-      router.push("/login");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+  const handleToggleMessages = () => {
+    setShowMessages((prev) => !prev); // Toggle state
   };
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Navbar */}
-      <Navbar admin={true} />
-      {/* Main Content */}
+      <Navbar
+        admin={true}
+        onToggleMessages={handleToggleMessages}
+        showMessages={showMessages}
+      />
       <div className="pt-24 px-6 py-4">
-        <Cards />
+        {showMessages ? <ReciveMessage /> : <Cards />}
       </div>
     </div>
   );

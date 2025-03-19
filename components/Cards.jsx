@@ -81,7 +81,7 @@ export default function Cards() {
             </CardContent>
             {isAdmin && (
               <CardContent>
-                <Button className="px-2 py-1 text-sm">
+                <Button>
                   <Link href={`/posts/${post.$id}`}>{EDIT_LABEL}</Link>
                 </Button>
               </CardContent>

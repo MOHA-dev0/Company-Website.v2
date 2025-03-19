@@ -9,7 +9,7 @@ import ReciveMessage from "@/components/adminpage/ReciveMessage";
 export default function AdminPage() {
   const router = useRouter();
   const [userInfo, setUserInfo] = useState(null);
-  const [showMessages, setShowMessages] = useState(false); // New state
+  const [showMessages, setShowMessages] = useState(false);
 
   useEffect(() => {
     const user = account.get();
@@ -20,15 +20,15 @@ export default function AdminPage() {
   }, [router]);
 
   const handleToggleMessages = () => {
-    setShowMessages((prev) => !prev); // Toggle state
+    setShowMessages((prev) => !prev);
   };
 
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar
         admin={true}
-        onToggleMessages={handleToggleMessages}
-        showMessages={showMessages}
+        onToggle={handleToggleMessages}
+        clicked={showMessages}
       />
       <div className="pt-24 px-6 py-4">
         {showMessages ? <ReciveMessage /> : <Cards />}

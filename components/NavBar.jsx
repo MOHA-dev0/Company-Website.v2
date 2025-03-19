@@ -11,8 +11,9 @@ const LOADING_MESSAGE = "Loading...";
 const MAIN_PAGE_LABEL = "Main Page";
 const MESSAGES_LABEL = "See Messages";
 const POSTS_LABEL = "Posts";
+const SEND_MESSAGE_LABEL = "Send Message";
 
-export default function Navbar({ admin, onToggleMessages, showMessages }) {
+export default function Navbar({ admin, onToggle, clicked }) {
   const router = useRouter();
   const [userInfo, setUserInfo] = useState(null);
 
@@ -57,14 +58,22 @@ export default function Navbar({ admin, onToggleMessages, showMessages }) {
                   {CREATE_NEW_POST_BUTTON}
                 </button>
               )}
-              {admin && (
+              {admin ? (
                 <button
-                  onClick={onToggleMessages}
+                  onClick={onToggle}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 shadow-md"
                 >
-                  {showMessages ? POSTS_LABEL : MESSAGES_LABEL}
+                  {clicked ? POSTS_LABEL : MESSAGES_LABEL}
+                </button>
+              ) : (
+                <button
+                  onClick={onToggle}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 shadow-md"
+                >
+                  {clicked ? POSTS_LABEL : SEND_MESSAGE_LABEL}
                 </button>
               )}
+
               <button
                 onClick={logout}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300"

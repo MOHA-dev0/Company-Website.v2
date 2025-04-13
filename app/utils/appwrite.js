@@ -1,5 +1,4 @@
 import { Client, Databases, Account, ID, Teams, Storage } from "appwrite";
-
 const client = new Client();
 
 client

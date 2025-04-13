@@ -12,8 +12,16 @@ const MAIN_PAGE_LABEL = "Main Page";
 const MESSAGES_LABEL = "See Messages";
 const POSTS_LABEL = "Posts";
 const SEND_MESSAGE_LABEL = "Send Message";
+const USERS_LABEL = "Users";
+const HIDE_USERS_LABEL = "Hide Users";
 
-export default function Navbar({ admin, onToggle, clicked }) {
+export default function Navbar({
+  admin,
+  onToggle,
+  onUsersToggle,
+  clicked,
+  clickedUsers,
+}) {
   const router = useRouter();
   const [userInfo, setUserInfo] = useState(null);
 
@@ -58,10 +66,22 @@ export default function Navbar({ admin, onToggle, clicked }) {
                   {CREATE_NEW_POST_BUTTON}
                 </button>
               )}
+              {admin && (
+                <button
+                  onClick={onUsersToggle}
+                  className="px-4 py-2 rounded-lg transition duration-300 shadow-mdbg-blue-600 text-white bg-blue-600"
+                >
+                  {clickedUsers ? HIDE_USERS_LABEL : USERS_LABEL}
+                </button>
+              )}
               {admin ? (
                 <button
                   onClick={onToggle}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 shadow-md"
+                  className={`px-4 py-2 rounded-lg transition duration-300 shadow-md ${
+                    clicked
+                      ? "bg-blue-700 text-white"
+                      : "bg-blue-600 text-white hover:bg-blue-700"
+                  }`}
                 >
                   {clicked ? POSTS_LABEL : MESSAGES_LABEL}
                 </button>

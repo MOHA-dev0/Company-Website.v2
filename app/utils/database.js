@@ -17,6 +17,11 @@ const collections = [
     id: process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_COMMENTS_ID,
     name: "comments",
   },
+  {
+    databaseId: process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
+    id: process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_USERS_ID,
+    name: "users",
+  },
 ];
 
 const db = {};

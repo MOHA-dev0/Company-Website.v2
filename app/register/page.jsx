@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { account, ID } from "@/app/utils/appwrite";
 import { useRouter } from "next/navigation";
+import { db } from "../utils/database";
 
 // Global Constants
 const REGISTER_TITLE = "Register";
@@ -39,8 +40,16 @@ const RegisterPage = () => {
 
     try {
       await account.create(ID.unique(), email, password, name);
+      const response = await db.users.create({
+        username: name,
+        password: password,
+        email: email,
+      });
+      await account.createEmailPasswordSession(email, password);
+
+      const user = await account.get();
       setSuccessMessage("Registration successful! Redirecting...");
-      setTimeout(() => router.push(`/profile/${ID}`), 2000);
+      setTimeout(() => router.push(`/profile/${user.$id}`), 2000);
     } catch (e) {
       setError(e.message);
       console.error(e);

@@ -39,20 +39,37 @@ const RegisterPage = () => {
     }
 
     try {
-      await account.create(ID.unique(), email, password, name);
-      const response = await db.users.create({
-        username: name,
-        password: password,
-        email: email,
-      });
+      const authUser = await account.create(ID.unique(), email, password, name);
+
+      const response = await db.users.create(
+        {
+          username: name,
+          email: email,
+          authId: authUser.$id,
+        },
+        authUser.$id
+      );
+
       await account.createEmailPasswordSession(email, password);
 
-      const user = await account.get();
       setSuccessMessage("Registration successful! Redirecting...");
-      setTimeout(() => router.push(`/profile/${user.$id}`), 2000);
+      setTimeout(() => router.push(`/profile/${authUser.$id}`), 2000);
     } catch (e) {
-      setError(e.message);
-      console.error(e);
+      console.error("Registration error:", e);
+
+      if (e.message.includes("already exists")) {
+        setError("This email is already registered.");
+      } else {
+        setError("Registration failed. Please try again.");
+      }
+
+      if (authUser) {
+        try {
+          await account.delete(authUser.$id);
+        } catch (cleanupError) {
+          console.error("Cleanup error:", cleanupError);
+        }
+      }
     }
   }
 

@@ -24,6 +24,10 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
+      try {
+        await account.deleteSession("current");
+      } catch (deleteError) {}
+
       await account.createEmailPasswordSession(email, password);
 
       await new Promise((resolve) => setTimeout(resolve, 500));

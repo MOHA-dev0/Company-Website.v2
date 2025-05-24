@@ -126,8 +126,6 @@ const RegisterPage = () => {
       >
         {REGISTER_BUTTON_TEXT}
       </button>
-
-      <p>sign in with Google</p>
     </div>
   );
 };

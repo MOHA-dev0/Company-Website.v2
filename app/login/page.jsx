@@ -11,19 +11,23 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  // تسجيل الدخول بالإيميل وكلمة المرور
+  const LOGIN_TITLE = "Login";
+  const EMAIL_TITLE = "Email";
+  const EMAIL_PLACEHOLDER = "Email";
+  const PASSWORD_PLACEHOLDER = "Password";
+  const GOOGLE_LOGIN_BUTTON_TEXT = "Continue with Google";
+  const REGISTER_TEXT = "Don't have an account? ";
+
   const login = async () => {
     setError("");
     setLoading(true);
 
     try {
-      await account.deleteSession("current").catch(() => {}); // حذف الجلسة الحالية لو موجودة
+      await account.deleteSession("current").catch(() => {});
       await account.createEmailPasswordSession(email, password);
 
-      // بعد تسجيل الدخول، جلب بيانات المستخدم
       const user = await account.get();
 
-      // التوجيه إلى صفحة الملف الشخصي مع معرف المستخدم
       router.push(`/profile/${user.$id}`);
     } catch (err) {
       if (err?.message?.includes("invalid credentials")) {
@@ -37,9 +41,7 @@ const LoginPage = () => {
     }
   };
 
-  // تسجيل الدخول باستخدام Google OAuth
   const loginWithGoogle = () => {
-    // رابط إعادة التوجيه يجب أن يكون ثابت ويطابق المسجل في إعدادات Appwrite وGoogle Cloud Console
     const redirectURL = "http://localhost:3000/oauth/callback";
 
     account.createOAuth2Session("google", redirectURL, redirectURL);
@@ -48,7 +50,7 @@ const LoginPage = () => {
   return (
     <div className="flex flex-col gap-6 max-w-md mx-auto p-4 bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-        Login
+        {LOGIN_TITLE}
       </h2>
 
       {error && (
@@ -59,7 +61,7 @@ const LoginPage = () => {
 
       <input
         type="email"
-        placeholder="Email"
+        placeholder={EMAIL_PLACEHOLDER}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
@@ -67,16 +69,16 @@ const LoginPage = () => {
 
       <input
         type="password"
-        placeholder="Password"
+        placeholder={PASSWORD_PLACEHOLDER}
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
       />
 
       <span>
-        Don't have an account?{" "}
+        {REGISTER_TEXT}{" "}
         <a className="text-blue-800" href="/register">
-          Register
+          {EMAIL_TITLE}
         </a>
       </span>
 
@@ -92,7 +94,7 @@ const LoginPage = () => {
         onClick={loginWithGoogle}
         className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300"
       >
-        Continue with Google
+        {GOOGLE_LOGIN_BUTTON_TEXT}
       </button>
     </div>
   );

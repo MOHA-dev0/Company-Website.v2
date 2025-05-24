@@ -14,7 +14,7 @@ import Link from "next/link";
 
 const EDIT_LABEL = "Edit";
 const NOT_FOUND_LABEL = "No posts found.";
-const LODING_LABEL = "Loading...";
+const LODING_LABEL = "Loading....";
 
 export default function Cards() {
   const [posts, setPosts] = useState([]);

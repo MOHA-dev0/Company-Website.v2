@@ -16,6 +16,7 @@ const LoginPage = () => {
   const EMAIL_PLACEHOLDER = "Email";
   const PASSWORD_PLACEHOLDER = "Password";
   const GOOGLE_LOGIN_BUTTON_TEXT = "Continue with Google";
+  const GITHUB_LOGIN_BUTTON_TEXT = "Continue with GitHub";
   const REGISTER_TEXT = "Don't have an account? ";
 
   const login = async () => {
@@ -45,6 +46,12 @@ const LoginPage = () => {
     const redirectURL = "http://localhost:3000/oauth/callback";
 
     account.createOAuth2Session("google", redirectURL, redirectURL);
+  };
+
+  const loginWithGitHub = () => {
+    const redirectURL = "http://localhost:3000/oauth/callback";
+    console.log("Logging in with GitHub...");
+    account.createOAuth2Session("github", redirectURL, redirectURL);
   };
 
   return (
@@ -95,6 +102,12 @@ const LoginPage = () => {
         className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300"
       >
         {GOOGLE_LOGIN_BUTTON_TEXT}
+      </button>
+      <button
+        onClick={loginWithGitHub}
+        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300"
+      >
+        {GITHUB_LOGIN_BUTTON_TEXT}
       </button>
     </div>
   );

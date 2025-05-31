@@ -87,7 +87,7 @@ export default function PremiumNewsCards() {
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
           className="text-5xl"
         >
-          🌈
+          🌐
         </motion.div>
       </div>
     );

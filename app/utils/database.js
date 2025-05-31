@@ -22,6 +22,11 @@ const collections = [
     id: process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_USERS_ID,
     name: "users",
   },
+  {
+    databaseId: process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
+    id: process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_GITHUB_ID,
+    name: "github",
+  },
 ];
 
 const db = {};

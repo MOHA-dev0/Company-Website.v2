@@ -22,7 +22,6 @@ export default function UserProfilePage() {
         clicked={showSendMessages}
       />
       <div className="pt-24 px-6 py-4">
-        <h1 className="mb-4 text-xl font-bold">User Profile: {userId}</h1>
         {showSendMessages ? <SendMessage /> : <Cards />}
       </div>
     </div>

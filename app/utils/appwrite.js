@@ -6,6 +6,7 @@ import {
   Teams,
   Storage,
   Query,
+  Permission,
 } from "appwrite";
 const client = new Client();
 
@@ -17,7 +18,7 @@ const account = new Account(client);
 const teams = new Teams(client);
 const storage = new Storage(client);
 
-export { client, database, account, ID, teams, storage, Query };
+export { client, database, account, ID, teams, storage, Query, Permission };
 
 export async function publishPost({ title, description, image }) {
   try {

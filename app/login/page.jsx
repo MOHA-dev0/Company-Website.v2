@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { account } from "@/app/utils/appwrite";
 import { useRouter } from "next/navigation";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -42,15 +44,28 @@ const LoginPage = () => {
     }
   };
 
-  const loginWithGoogle = () => {
+  const loginWithGoogle = async () => {
+    await account.deleteSession("current").catch(() => {});
     const redirectURL = "http://localhost:3000/oauth/callback";
 
-    account.createOAuth2Session("google", redirectURL, redirectURL);
+    account.createOAuth2Session(
+      "google",
+      redirectURL,
+      redirectURL + "?prompt=select_account"
+    );
   };
 
-  const loginWithGitHub = () => {
+  const loginWithGitHub = async () => {
+    await account.deleteSession("current").catch(() => {});
     const redirectURL = "http://localhost:3000/oauth/callback";
-    console.log("Logging in with GitHub...");
+
+    try {
+      await account.deleteSession("current");
+      console.log("Deleted current session");
+    } catch (err) {
+      console.warn("No active session to delete");
+    }
+
     account.createOAuth2Session("github", redirectURL, redirectURL);
   };
 
@@ -99,14 +114,17 @@ const LoginPage = () => {
 
       <button
         onClick={loginWithGoogle}
-        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300"
+        className="flex items-center justify-center gap-3 px-4 py-2 bg-white text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-100 transition duration-300 shadow"
       >
+        <FcGoogle className="text-xl" />
         {GOOGLE_LOGIN_BUTTON_TEXT}
       </button>
+
       <button
         onClick={loginWithGitHub}
-        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300"
+        className="flex items-center justify-center gap-3 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition duration-300 shadow"
       >
+        <FaGithub className="text-xl" />
         {GITHUB_LOGIN_BUTTON_TEXT}
       </button>
     </div>

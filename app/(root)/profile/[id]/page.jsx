@@ -24,6 +24,7 @@ export default function UserProfilePage() {
       <div className="pt-24 px-6 py-4">
         {showSendMessages ? <SendMessage /> : <Cards />}
       </div>
+      <SendMessage />
     </div>
   );
 }

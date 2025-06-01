@@ -121,28 +121,17 @@ export default function Navbar({
               </>
             )}
 
-            <button
-              onClick={onToggle}
-              className={`flex items-center px-4 py-2 rounded-lg transition duration-300 shadow-md ${
-                admin
-                  ? clicked
-                    ? "bg-blue-700"
-                    : "bg-blue-600 hover:bg-blue-700"
-                  : "bg-blue-600 hover:bg-blue-700"
-              } text-white`}
-            >
-              {admin ? (
-                <>
-                  <FiMessageSquare className="mr-2" />
-                  <span>{clicked ? POSTS_LABEL : MESSAGES_LABEL}</span>
-                </>
-              ) : (
-                <>
-                  <FiMail className="mr-2" />
-                  <span>{clicked ? POSTS_LABEL : SEND_MESSAGE_LABEL}</span>
-                </>
-              )}
-            </button>
+            {admin && (
+              <button
+                onClick={onToggle}
+                className={`flex items-center px-4 py-2 rounded-lg transition duration-300 shadow-md ${
+                  clicked ? "bg-blue-700" : "bg-blue-600 hover:bg-blue-700"
+                } text-white`}
+              >
+                <FiMessageSquare className="mr-2" />
+                <span>{clicked ? POSTS_LABEL : MESSAGES_LABEL}</span>
+              </button>
+            )}
 
             <button
               onClick={logout}
@@ -205,27 +194,20 @@ export default function Navbar({
             </>
           )}
 
-          <button
-            onClick={() => {
-              onToggle();
-              setMobileMenuOpen(false);
-            }}
-            className={`w-full flex items-center px-3 py-2 text-left rounded-md ${
-              admin ? (clicked ? "bg-blue-700" : "bg-blue-600") : "bg-blue-600"
-            } text-white`}
-          >
-            {admin ? (
-              <>
-                <FiMessageSquare className="mr-2" />
-                {clicked ? POSTS_LABEL : MESSAGES_LABEL}
-              </>
-            ) : (
-              <>
-                <FiMail className="mr-2" />
-                {clicked ? POSTS_LABEL : SEND_MESSAGE_LABEL}
-              </>
-            )}
-          </button>
+          {admin && (
+            <button
+              onClick={() => {
+                onToggle();
+                setMobileMenuOpen(false);
+              }}
+              className={`w-full flex items-center px-3 py-2 text-left rounded-md ${
+                clicked ? "bg-blue-700" : "bg-blue-600"
+              } text-white`}
+            >
+              <FiMessageSquare className="mr-2" />
+              {clicked ? POSTS_LABEL : MESSAGES_LABEL}
+            </button>
+          )}
 
           <button
             onClick={() => {

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { db, Query } from "@/app/utils/database";
 import { Button } from "@/components/ui/button";
@@ -8,14 +8,16 @@ import { account } from "@/app/utils/appwrite";
 import Link from "next/link";
 import { FiClock, FiUser, FiMessageSquare, FiArrowLeft } from "react-icons/fi";
 
-const LOADING_LABEL = "📡 Loading article...";
 const NOT_FOUND_LABEL = "⚠️ Article not found";
 const COMMENT_LABEL = "Comments";
 const SUBMIT_LABEL = "Post Comment";
 const NOT_FOUND_COMMENTS_LABEL = "🤷‍♂️ No comments yet - be the first!";
+const ALL_NEWS_LABEL = "All News";
 
 export default function NewsDetail() {
   const { id } = useParams();
+  const searchParams = useSearchParams();
+  const admin = searchParams.get("admin") === "true";
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState([]);
@@ -161,14 +163,14 @@ export default function NewsDetail() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4 }}
-          className="mb-8"
+          className="mb-8 sticky top-4 z-50"
         >
-          <Link href={`/profile/${user?.$id}`}>
+          <Link href={admin ? "/admin" : `/profile/${user?.$id}`}>
             <Button
               variant="ghost"
-              className="flex items-center text-gray-600 hover:text-gray-900"
+              className="flex items-center text-gray-600 hover:text-gray-900 bg-white/80 backdrop-blur-sm shadow-sm"
             >
-              <FiArrowLeft className="mr-2" /> All News
+              <FiArrowLeft className="mr-2" /> {ALL_NEWS_LABEL}
             </Button>
           </Link>
         </motion.div>
@@ -197,7 +199,9 @@ export default function NewsDetail() {
             </div>
             <div className="flex items-center">
               <FiMessageSquare className="mr-2" />
-              <span>{comments.length} comments</span>
+              <span>
+                {comments.length} {COMMENT_LABEL}
+              </span>
             </div>
           </div>
         </motion.header>

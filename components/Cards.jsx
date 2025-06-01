@@ -92,6 +92,12 @@ export default function PremiumNewsCards() {
       </div>
     );
   }
+  let CheckIsAdmin;
+  if (isAdmin) {
+    CheckIsAdmin = `?admin=true`;
+  } else {
+    CheckIsAdmin = "";
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-16 px-4 sm:px-6 lg:px-8">
@@ -105,70 +111,69 @@ export default function PremiumNewsCards() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="mb-20 group perspective-1000"
-            ref={(el) => (cardsRef.current[0] = el)}
-            onMouseMove={(e) => onMouseMove(e, 0)}
-            onMouseLeave={() => onMouseLeave(0)}
+            transition={{ duration: 0.5 }}
+            className="mb-20 group"
+            onMouseMove={(e) => {
+              const card = e.currentTarget;
+              const rect = card.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              const y = e.clientY - rect.top;
+              const centerX = rect.width / 2;
+              const centerY = rect.height / 2;
+              const rotateY = ((x - centerX) / centerX) * 5; // Reduced rotation amount
+              const rotateX = ((centerY - y) / centerY) * 5; // Reduced rotation amount
+
+              card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform =
+                "perspective(1000px) rotateX(0) rotateY(0)";
+            }}
           >
-            <div
-              className="relative overflow-hidden rounded-3xl shadow-2xl transition-all duration-500 ease-out border border-white/30 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-lg"
-              style={{ transformStyle: "preserve-3d" }}
-            >
-              <div className="absolute inset-0 rounded-3xl p-[2px]">
-                <div className="absolute inset-0 bg-[conic-gradient(from_90deg_at_50%_50%,#e2cbff_0%,#393bb2_50%,#e2cbff_100%)] opacity-30 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
+            <div className="relative overflow-hidden rounded-3xl shadow-xl border border-white/30 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-lg">
+              {/* Image with subtle zoom effect */}
+              <div className="absolute inset-0 overflow-hidden">
+                <img
+                  src={featuredPost.image}
+                  alt={featuredPost.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
               </div>
 
-              <div className="relative z-10 h-full">
-                <div className="absolute inset-0">
-                  <img
-                    src={featuredPost.image}
-                    alt={featuredPost.title}
-                    className="w-full h-full object-cover transform group-hover:scale-105 transition duration-1000"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                </div>
+              {/* Content */}
+              <div className="relative z-20 p-8 md:p-12 lg:p-16 h-[500px] flex flex-col justify-end">
+                <div className="max-w-2xl">
+                  <span className="inline-block px-4 py-2 mb-4 text-sm font-bold tracking-wider text-white bg-gradient-to-r from-purple-600 to-pink-500 rounded-full shadow">
+                    ✨ Featured Story
+                  </span>
+                  <CardTitle className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
+                    {featuredPost.title}
+                  </CardTitle>
+                  <CardDescription className="text-lg text-gray-200 mb-6 line-clamp-3">
+                    {featuredPost.description}
+                  </CardDescription>
 
-                <div className="relative z-20 p-8 md:p-12 lg:p-16 h-[600px] flex flex-col justify-end">
-                  <div className="max-w-2xl">
-                    <span className="inline-block px-4 py-2 mb-4 text-sm font-bold tracking-wider text-white bg-gradient-to-r from-purple-600 to-pink-500 rounded-full shadow-lg">
-                      ✨ Featured Story
-                    </span>
-                    <CardTitle className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight drop-shadow-xl">
-                      {featuredPost.title}
-                    </CardTitle>
-                    <CardDescription className="text-xl text-gray-200 mb-8 line-clamp-3 drop-shadow-lg">
-                      {featuredPost.description}
-                    </CardDescription>
+                  <div className="flex items-center space-x-3">
+                    <Link href={`/post/${featuredPost.$id}${CheckIsAdmin}`}>
+                      <Button
+                        variant="ghost"
+                        className="text-white hover:bg-white/20 border border-white/30 hover:border-white/50 px-5 py-2 rounded-full transition-colors"
+                      >
+                        {READ_MORE}
+                      </Button>
+                    </Link>
 
-                    <div className="flex items-center space-x-4">
-                      <Link href={`/post/${featuredPost.$id}`} legacyBehavior>
-                        <a>
-                          <Button
-                            variant="ghost"
-                            className="text-white hover:bg-white/20 border-2 border-white/30 hover:border-white/50 px-6 py-3 rounded-full transition-all duration-300 hover:scale-105"
-                          >
-                            {READ_MORE}
-                          </Button>
-                        </a>
-                      </Link>
-
-                      {isAdmin && (
-                        <Link
-                          href={`/posts/${featuredPost.$id}`}
-                          legacyBehavior
+                    {isAdmin && (
+                      <Link href={`/posts/${featuredPost.$id}`}>
+                        <Button
+                          variant="outline"
+                          className="bg-white/20 text-white hover:bg-white/30 px-5 py-2 rounded-full border border-white/30 hover:border-white/50 transition-colors"
                         >
-                          <a>
-                            <Button
-                              variant="outline"
-                              className="bg-white/20 text-white hover:bg-white/30 px-6 py-3 rounded-full border-2 border-white/30 hover:border-white/50 transition-all duration-300 hover:scale-105"
-                            >
-                              {EDIT_LABEL}
-                            </Button>
-                          </a>
-                        </Link>
-                      )}
-                    </div>
+                          {EDIT_LABEL}
+                        </Button>
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
@@ -202,7 +207,10 @@ export default function PremiumNewsCards() {
                     style={{ transformStyle: "preserve-3d" }}
                   >
                     <CardHeader className="p-0 relative overflow-hidden h-60">
-                      <Link href={`/post/${post.$id}`} legacyBehavior>
+                      <Link
+                        href={`/post/${post.$id}${CheckIsAdmin}`}
+                        legacyBehavior
+                      >
                         <a className="block w-full h-full">
                           <img
                             src={post.image}
@@ -227,7 +235,10 @@ export default function PremiumNewsCards() {
                       </CardDescription>
                     </CardContent>
                     <div className="px-6 pb-6 flex justify-between items-center">
-                      <Link href={`/post/${post.$id}`} legacyBehavior>
+                      <Link
+                        href={`/post/${post.$id}${CheckIsAdmin}`}
+                        legacyBehavior
+                      >
                         <a className="group flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium transition-colors">
                           <motion.span
                             whileHover={{ x: 5 }}

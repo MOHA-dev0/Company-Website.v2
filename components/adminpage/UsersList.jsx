@@ -115,6 +115,14 @@ export default function UsersList() {
     }
   };
 
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+
   return (
     <div>
       <Table>
@@ -167,13 +175,7 @@ export default function UsersList() {
                     user.email
                   )}
                 </TableCell>
-                <TableCell>
-                  {new Date(user.$createdAt).toLocaleDateString("en-GB", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  })}
-                </TableCell>
+                <TableCell>{formatDate(user.$createdAt)}</TableCell>
                 <TableCell className="text-right space-x-2">
                   {editingId === user.$id ? (
                     <>

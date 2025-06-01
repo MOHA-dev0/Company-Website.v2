@@ -89,6 +89,35 @@ export default function NewsDetail() {
     }
   };
 
+  function formatCommentDate(dateString) {
+    const date = new Date(dateString);
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    const month = monthNames[date.getMonth()];
+    const day = date.getDate();
+
+    let hour = date.getHours();
+    const minute = String(date.getMinutes()).padStart(2, "0");
+
+    const ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12;
+    hour = hour ? hour : 12;
+
+    return `${month} ${day}, ${hour}:${minute} ${ampm}`;
+  }
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
@@ -268,15 +297,7 @@ export default function NewsDetail() {
                             {comment.userName}
                           </h4>
                           <span className="text-sm text-gray-500 mt-1 sm:mt-0">
-                            {new Date(comment.$createdAt).toLocaleString(
-                              "en-US",
-                              {
-                                month: "short",
-                                day: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              }
-                            )}
+                            {formatCommentDate(comment.$createdAt)}
                           </span>
                         </div>
                         <p className="text-gray-700 mt-3">{comment.content}</p>

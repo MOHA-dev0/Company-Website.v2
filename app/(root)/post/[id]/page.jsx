@@ -128,7 +128,6 @@ export default function NewsDetail() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
-        {/* Back Button */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -145,7 +144,6 @@ export default function NewsDetail() {
           </Link>
         </motion.div>
 
-        {/* Article Header */}
         <motion.header
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -175,7 +173,6 @@ export default function NewsDetail() {
           </div>
         </motion.header>
 
-        {/* Featured Image */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -189,7 +186,6 @@ export default function NewsDetail() {
           />
         </motion.div>
 
-        {/* Article Content */}
         <motion.article
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -201,7 +197,6 @@ export default function NewsDetail() {
           </div>
         </motion.article>
 
-        {/* Comments Section */}
         <motion.section
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

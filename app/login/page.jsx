@@ -5,6 +5,7 @@ import { account } from "@/app/utils/appwrite";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+import { teams } from "@/app/utils/appwrite";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -27,11 +28,25 @@ const LoginPage = () => {
 
     try {
       await account.deleteSession("current").catch(() => {});
+
       await account.createEmailPasswordSession(email, password);
 
       const user = await account.get();
 
-      router.push(`/profile/${user.$id}`);
+      let userTeams = null;
+      for (let i = 0; i < 3; i++) {
+        userTeams = await teams.list();
+        if (userTeams.teams.length > 0) break;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+
+      const isAdmin = userTeams?.teams?.some((team) => team.name === "admins");
+
+      if (isAdmin) {
+        router.push("/admin");
+      } else {
+        router.push(`/profile/${user.$id}`);
+      }
     } catch (err) {
       if (err?.message?.includes("invalid credentials")) {
         setError("Incorrect email or password.");

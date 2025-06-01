@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { db } from "@/app/utils/database";
 import { account } from "@/app/utils/appwrite";
 
-const MESSAGE_TITLE = "Send Message";
+const MESSAGE_TITLE = "Contact With Us";
 const MESSAGE_BUTTON_TEXT = "Send Message";
 const USERNAME_LABEL = "Username";
 const EMAIL_LABEL = "Email";

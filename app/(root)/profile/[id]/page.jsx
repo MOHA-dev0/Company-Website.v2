@@ -6,6 +6,7 @@ import Navbar from "@/components/NavBar";
 import Cards from "@/components/Cards";
 import { useParams } from "next/navigation";
 import SendMessage from "@/components/userpage/SendMessage";
+import FAQSection from "@/components/userpage/Faq";
 
 export default function UserProfilePage() {
   const { userId } = useParams();
@@ -77,6 +78,17 @@ export default function UserProfilePage() {
             exit={{ opacity: 0, y: 20 }}
           >
             <SendMessage />
+          </motion.div>
+        </AnimatePresence>
+
+        <AnimatePresence>
+          <motion.div
+            variants={messageVariants}
+            initial="hidden"
+            animate="visible"
+            exit={{ opacity: 0, y: 20 }}
+          >
+            <FAQSection />
           </motion.div>
         </AnimatePresence>
       </div>

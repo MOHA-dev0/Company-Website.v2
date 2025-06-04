@@ -6,19 +6,16 @@ import {
   FiPlus,
   FiUsers,
   FiMessageSquare,
-  FiMail,
   FiLogOut,
   FiMenu,
 } from "react-icons/fi";
 
-const ADMIN_DASHBOARD = "Admin Dashboard";
 const WELCOME_MESSAGE = "Welcome, ";
 const CREATE_NEW_POST_BUTTON = "Create New Post";
 const LOGOUT_BUTTON = "Logout";
-const MAIN_PAGE_LABEL = "Main Page";
+const MAIN_PAGE_LABEL = "NewsHub";
 const MESSAGES_LABEL = "See Messages";
 const POSTS_LABEL = "Posts";
-const SEND_MESSAGE_LABEL = "Send Message";
 const USERS_LABEL = "Users";
 const HIDE_USERS_LABEL = "Hide Users";
 
@@ -77,7 +74,7 @@ export default function Navbar({
           {/* Left side - Logo/Brand */}
           <div className="flex items-center">
             <p className="text-lg font-semibold">
-              {admin ? ADMIN_DASHBOARD : MAIN_PAGE_LABEL}
+              <span className="text-blue-600">{MAIN_PAGE_LABEL}</span>
             </p>
           </div>
 

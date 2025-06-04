@@ -3,17 +3,20 @@ import { useState } from "react";
 import { account, ID } from "@/app/utils/appwrite";
 import { useRouter } from "next/navigation";
 import { db } from "../utils/database";
+import emailjs from "@emailjs/browser";
 
-// Global Constants
+const EMAILJS_SERVICE_ID = process.env.EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = process.env.EMAILJS_TEMPLATE_ID;
+const EMAILJS_PUBLIC_KEY = process.env.EMAILJS_PUBLIC_KEY;
+
 const REGISTER_TITLE = "Register";
 const EMAIL_PLACEHOLDER = "Email";
-const USERNAME_PLACEHOLDER = "UserName";
+const USERNAME_PLACEHOLDER = "Username";
 const PASSWORD_PLACEHOLDER = "Password";
-const LOGIN_TEXT = "Do you have an account? ";
+const LOGIN_TEXT = "Already have an account? ";
 const LOGIN_LINK_TEXT = "Login";
 const REGISTER_BUTTON_TEXT = "Register";
 
-// Helper function to validate email
 const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
 const RegisterPage = () => {
@@ -22,72 +25,107 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
-  async function register() {
+  const sendVerificationEmail = async (
+    userEmail,
+    userName,
+    verificationLink
+  ) => {
+    const templateParams = {
+      user_name: userName,
+      user_email: userEmail,
+      activation_link: verificationLink,
+    };
+
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      );
+    } catch (err) {
+      console.error("Failed to send email:", err);
+    }
+  };
+  const generateSecret = () => Math.random().toString(36).substring(2, 16);
+
+  const register = async () => {
     setError(null);
     setSuccessMessage(null);
+    setLoading(true);
 
     if (!isValidEmail(email)) {
       setError("Invalid email format. Please enter a valid email.");
+      setLoading(false);
       return;
     }
 
     if (password.length < 8) {
       setError("Password must be at least 8 characters long.");
+      setLoading(false);
       return;
     }
 
     try {
+      const secret = generateSecret();
+
       const authUser = await account.create(ID.unique(), email, password, name);
 
-      const response = await db.users.create(
+      await account.createEmailPasswordSession(email, password);
+
+      const verification = await account.createVerification(
+        `${process.env.NEXT_PUBLIC_APP_URL}/verify`
+      );
+
+      const verificationLink = `${process.env.NEXT_PUBLIC_APP_URL}/verify?userId=${authUser.$id}&secret=${secret}`;
+
+      await sendVerificationEmail(email, name, verificationLink);
+
+      await account.deleteSession("current");
+
+      await db.users.create(
         {
           username: name,
           email: email,
           authId: authUser.$id,
+          secret: secret,
         },
         authUser.$id
       );
 
-      await account.createEmailPasswordSession(email, password);
-
-      setSuccessMessage("Registration successful! Redirecting...");
-      setTimeout(() => router.push(`/profile/${authUser.$id}`), 2000);
+      setSuccessMessage(
+        "Registration successful! A verification link has been sent to your email."
+      );
     } catch (e) {
       console.error("Registration error:", e);
 
-      if (e.message.includes("already exists")) {
+      if (e.message?.includes("already exists")) {
         setError("This email is already registered.");
       } else {
         setError("Registration failed. Please try again.");
       }
-
-      if (authUser) {
-        try {
-          await account.delete(authUser.$id);
-        } catch (cleanupError) {
-          console.error("Cleanup error:", cleanupError);
-        }
-      }
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="flex flex-col gap-6 max-w-md mx-auto p-4 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
+    <div className="flex flex-col gap-6 max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg mt-12">
+      <h2 className="text-2xl font-semibold text-center text-gray-800">
         {REGISTER_TITLE}
       </h2>
 
       {error && (
-        <div className="text-red-600 text-center mb-4">
-          <p>{error}</p>
-        </div>
+        <div className="bg-red-100 text-red-700 px-4 py-2 rounded">{error}</div>
       )}
 
       {successMessage && (
-        <div className="text-green-600 text-center mb-4">
-          <p>{successMessage}</p>
+        <div className="bg-green-100 text-green-700 px-4 py-2 rounded">
+          {successMessage}
         </div>
       )}
 
@@ -96,35 +134,40 @@ const RegisterPage = () => {
         placeholder={EMAIL_PLACEHOLDER}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+        className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <input
-        type="name"
+        type="text"
         placeholder={USERNAME_PLACEHOLDER}
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+        className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-
       <input
         type="password"
         placeholder={PASSWORD_PLACEHOLDER}
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+        className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      <span>
+
+      <span className="text-sm text-gray-600">
         {LOGIN_TEXT}
-        <a className="text-blue-800" href="/login">
+        <a href="/login" className="text-blue-600 hover:underline">
           {LOGIN_LINK_TEXT}
         </a>
       </span>
 
       <button
         onClick={register}
-        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+        disabled={loading}
+        className={`px-4 py-2 rounded-lg text-white ${
+          loading
+            ? "bg-blue-400 cursor-not-allowed"
+            : "bg-blue-600 hover:bg-blue-700"
+        } transition duration-300`}
       >
-        {REGISTER_BUTTON_TEXT}
+        {loading ? "Registering..." : REGISTER_BUTTON_TEXT}
       </button>
     </div>
   );

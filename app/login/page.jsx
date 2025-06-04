@@ -16,6 +16,7 @@ const LoginPage = () => {
 
   const LOGIN_TITLE = "Login";
   const EMAIL_TITLE = "Email";
+  const REGISTER_TITLE = "Register";
   const EMAIL_PLACEHOLDER = "Email";
   const PASSWORD_PLACEHOLDER = "Password";
   const GOOGLE_LOGIN_BUTTON_TEXT = "Continue with Google";
@@ -115,7 +116,7 @@ const LoginPage = () => {
       <span>
         {REGISTER_TEXT}{" "}
         <a className="text-blue-800" href="/register">
-          {EMAIL_TITLE}
+          {REGISTER_TITLE}
         </a>
       </span>
 

@@ -1,16 +1,51 @@
 "use client";
 import { useState } from "react";
 import { db } from "@/app/utils/database";
+import { useSearchParams } from "next/navigation";
 
 const Rest_PASSWORD_TITLE = "Reset Your Password";
 const PASSWORD_PLACEHOLDER = "Enter your new password";
 export default function RestPasswordPage() {
-  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const secret = searchParams.get("secret");
+  const userId = searchParams.get("userId");
 
-  function handleResetPassword() {}
+  function handleResetPassword() {
+    setError(null);
+    setSuccessMessage(null);
+    setLoading(true);
+
+    if (!userId || !secret) {
+      setError("Invalid request parameters.");
+      setLoading(false);
+      return;
+    }
+
+    db.users
+      .list([db.users.query.equal("authId", userId)])
+      .then((response) => {
+        const user = response?.documents?.[0];
+        if (!user || user.secret !== secret) {
+          throw new Error("Invalid user or secret.");
+        }
+        return db.users.update(user.$id, { password });
+      })
+      .then(() => {
+        setSuccessMessage("Password reset successfully. You can now log in.");
+      })
+      .catch((err) => {
+        setError(
+          err.message || "An error occurred while resetting the password."
+        );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
   return (
     <div className="flex flex-col gap-6 max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg mt-12">
       <h2 className="text-2xl font-semibold text-center text-gray-800">
@@ -28,10 +63,10 @@ export default function RestPasswordPage() {
       )}
 
       <input
-        type="email"
+        type="password"
         placeholder={PASSWORD_PLACEHOLDER}
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
         className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
 

@@ -3,9 +3,9 @@ import { useState } from "react";
 import { db } from "../utils/database";
 import emailjs from "@emailjs/browser";
 
-const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
-const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+const EMAILJS_SERVICE_ID = "service_1xixbzc";
+const EMAILJS_TEMPLATE_ID = "template_9vuidkk";
+const EMAILJS_PUBLIC_KEY = "LjRRg9g-WXfvsDast";
 
 const Rest_PASSWORD_TITLE = "Reset Password";
 const EMAIL_PLACEHOLDER = "Enter your email to reset password";
@@ -16,22 +16,27 @@ const ResetPasswordPage = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const sendResetEmail = async (userName, userEmail, link) => {
+  const sendResetEmail = async (userEmail, link) => {
     const templateParams = {
-      user_name: userName,
-      user_email: userEmail,
-      activation_link: link,
+      link: link,
+      email: userEmail,
     };
 
     try {
-      await emailjs.send(
+      const result = await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
         templateParams,
         EMAILJS_PUBLIC_KEY
       );
+
+      console.log("Email sent successfully:", result);
     } catch (err) {
+      console.log("Error text:", JSON.stringify(templateParams));
       console.error("Failed to send reset email:", err);
+      if (err.status) {
+        console.error(`Error status: ${err.status}`);
+      }
       throw new Error("Email sending failed");
     }
   };
@@ -64,7 +69,7 @@ const ResetPasswordPage = () => {
 
       const secret = generateSecret();
       const resetLink = `${process.env.NEXT_PUBLIC_APP_URL}/reset-confirm?userId=${user.authId}&secret=${secret}`;
-      await sendResetEmail(user.username, user.email, resetLink);
+      await sendResetEmail(email, resetLink);
 
       setSuccessMessage("Reset link has been sent to your email.");
     } catch (e) {
@@ -74,7 +79,9 @@ const ResetPasswordPage = () => {
       setLoading(false);
     }
   };
-
+  console.log("Service ID:", EMAILJS_SERVICE_ID);
+  console.log("Template ID:", EMAILJS_TEMPLATE_ID);
+  console.log("Public Key:", EMAILJS_PUBLIC_KEY);
   return (
     <div className="flex flex-col gap-6 max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg mt-12">
       <h2 className="text-2xl font-semibold text-center text-gray-800">

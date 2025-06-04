@@ -34,6 +34,14 @@ const LoginPage = () => {
 
       const user = await account.get();
 
+      if (!user.emailVerification) {
+        setError(
+          "Your account is not verified. Please check your email to activate your account."
+        );
+        await account.deleteSession("current");
+        return;
+      }
+
       let userTeams = null;
       for (let i = 0; i < 3; i++) {
         userTeams = await teams.list();

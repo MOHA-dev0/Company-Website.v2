@@ -22,6 +22,7 @@ const LoginPage = () => {
   const GOOGLE_LOGIN_BUTTON_TEXT = "Continue with Google";
   const GITHUB_LOGIN_BUTTON_TEXT = "Continue with GitHub";
   const REGISTER_TEXT = "Don't have an account? ";
+  const FORGET_PASSWORD_TEXT = "Forgot your password?";
 
   const login = async () => {
     setError("");
@@ -125,6 +126,11 @@ const LoginPage = () => {
         {REGISTER_TEXT}{" "}
         <a className="text-blue-800" href="/register">
           {REGISTER_TITLE}
+        </a>
+      </span>
+      <span>
+        <a className="text-blue-800" href="/register">
+          {FORGET_PASSWORD_TEXT}
         </a>
       </span>
 

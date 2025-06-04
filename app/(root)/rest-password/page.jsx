@@ -69,6 +69,10 @@ const ResetPasswordPage = () => {
 
       const secret = generateSecret();
       const resetLink = `${process.env.NEXT_PUBLIC_APP_URL}/reset-confirm?userId=${user.authId}&secret=${secret}`;
+
+      await db.users.update(user.authId, {
+        secret: secret,
+      });
       await sendResetEmail(email, resetLink);
 
       setSuccessMessage("Reset link has been sent to your email.");

@@ -129,7 +129,7 @@ const LoginPage = () => {
         </a>
       </span>
       <span>
-        <a className="text-blue-800" href="/register">
+        <a className="text-blue-800" href="/rest-password">
           {FORGET_PASSWORD_TEXT}
         </a>
       </span>

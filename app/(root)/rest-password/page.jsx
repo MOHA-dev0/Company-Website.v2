@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { db } from "../utils/database";
+import { db } from "@/app/utils/database";
 import emailjs from "@emailjs/browser";
 
 const EMAILJS_SERVICE_ID = "service_1xixbzc";
@@ -79,9 +79,7 @@ const ResetPasswordPage = () => {
       setLoading(false);
     }
   };
-  console.log("Service ID:", EMAILJS_SERVICE_ID);
-  console.log("Template ID:", EMAILJS_TEMPLATE_ID);
-  console.log("Public Key:", EMAILJS_PUBLIC_KEY);
+
   return (
     <div className="flex flex-col gap-6 max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg mt-12">
       <h2 className="text-2xl font-semibold text-center text-gray-800">

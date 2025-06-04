@@ -14,38 +14,61 @@ export default function RestPasswordPage() {
   const secret = searchParams.get("secret");
   const userId = searchParams.get("userId");
 
-  function handleResetPassword() {
+  if (!secret || !userId) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <h1 className="text-2xl font-bold text-red-600">
+          Invalid or missing parameters.
+        </h1>
+      </div>
+    );
+  }
+
+  async function handleResetPassword() {
     setError(null);
     setSuccessMessage(null);
     setLoading(true);
 
-    if (!userId || !secret) {
-      setError("Invalid request parameters.");
-      setLoading(false);
-      return;
-    }
+    try {
+      if (!userId || !secret) {
+        throw new Error("Invalid request parameters.");
+      }
 
-    db.users
-      .list([db.users.query.equal("authId", userId)])
-      .then((response) => {
-        const user = response?.documents?.[0];
-        if (!user || user.secret !== secret) {
-          throw new Error("Invalid user or secret.");
-        }
-        return db.users.update(user.$id, { password });
-      })
-      .then(() => {
-        setSuccessMessage("Password reset successfully. You can now log in.");
-      })
-      .catch((err) => {
-        setError(
-          err.message || "An error occurred while resetting the password."
-        );
-      })
-      .finally(() => {
-        setLoading(false);
+      const response = await db.users.list([
+        db.users.query.equal("authId", userId),
+      ]);
+
+      const user = response?.documents?.[0];
+      if (!user || user.secret !== secret) {
+        throw new Error("Invalid user or secret.");
+      }
+
+      const apiResponse = await fetch("/api/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId,
+          newPassword: password,
+        }),
       });
+
+      if (!apiResponse.ok) {
+        const errData = await apiResponse.json();
+        throw new Error(errData.error || "Failed to reset password.");
+      }
+
+      setSuccessMessage("Password reset successfully. You can now log in.");
+    } catch (err) {
+      setError(
+        err.message || "An error occurred while resetting the password."
+      );
+    } finally {
+      setLoading(false);
+    }
   }
+
   return (
     <div className="flex flex-col gap-6 max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg mt-12">
       <h2 className="text-2xl font-semibold text-center text-gray-800">

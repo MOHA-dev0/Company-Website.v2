@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { account, Permission } from "@/app/utils/appwrite"; // لو تستخدم حساب appwrite
+import { account, Permission } from "@/app/utils/appwrite";
 import { useRouter } from "next/navigation";
 import { db } from "@/app/utils/database";
+import { teams } from "@/app/utils/appwrite";
 
 export default function OAuthCallback() {
   const router = useRouter();
@@ -34,8 +35,6 @@ export default function OAuthCallback() {
     }
   }
 
-  //check of user is logged in not same account and upload commit to github see yaa
-
   useEffect(() => {
     async function fetchUserAndRedirect() {
       try {
@@ -55,9 +54,24 @@ export default function OAuthCallback() {
           await saveGithubUsername(user.$id, githubUser.login);
         }
 
-        router.push(`/profile/${user.$id}`);
+        let userTeams = null;
+        for (let i = 0; i < 3; i++) {
+          userTeams = await teams.list();
+          if (userTeams.teams.length > 0) break;
+          await new Promise((resolve) => setTimeout(resolve, 500));
+        }
+
+        const isAdmin = userTeams?.teams?.some(
+          (team) => team.name === "admins"
+        );
+
+        if (isAdmin) {
+          router.push("/admin");
+        } else {
+          router.push(`/profile/${user.$id}`);
+        }
       } catch (error) {
-        console.error("Failed to fetch user after OAuth login:", error);
+        console.error("Failed during OAuth callback:", error);
         router.push("/login");
       }
     }

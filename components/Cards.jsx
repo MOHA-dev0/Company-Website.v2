@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { db } from "@/app/utils/database";
 import { account, teams } from "@/app/utils/appwrite";
 import Link from "next/link";
+import SearchBar from "./userpage/SearchBar";
 
 const EDIT_LABEL = "✏️ Edit";
 const NOT_FOUND_LABEL = "📭 No posts found";

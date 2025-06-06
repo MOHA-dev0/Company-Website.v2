@@ -27,6 +27,7 @@ export default function PremiumNewsCards() {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [featuredPost, setFeaturedPost] = useState(null);
+  const [filteredPosts, setFilteredPosts] = useState([]);
   const cardsRef = useRef([]);
 
   // 3D Tilt Effect
@@ -57,6 +58,7 @@ export default function PremiumNewsCards() {
           (a, b) => new Date(b.$createdAt) - new Date(a.$createdAt)
         );
         setPosts(sortedPosts);
+        setFilteredPosts(sortedPosts);
         setFeaturedPost(sortedPosts[0]);
       } catch (error) {
         console.error("Error fetching posts:", error);

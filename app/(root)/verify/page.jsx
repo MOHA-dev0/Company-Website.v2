@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { db } from "@/app/utils/database";
+import { account } from "@/app/utils/appwrite";
 
 export default function VerifyPage() {
   const searchParams = useSearchParams();
@@ -18,28 +18,7 @@ export default function VerifyPage() {
           return;
         }
 
-        const response = await db.users.list([
-          db.users.query.equal("authId", userId),
-        ]);
-
-        const user = response?.documents?.[0];
-
-        if (!user || user.secret !== secret) {
-          setStatus("error");
-          return;
-        }
-
-        const res = await fetch("/api/verify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId, secret }),
-        });
-
-        if (!res.ok) {
-          setStatus("error");
-          return;
-        }
-
+        await account.updateVerification(userId, secret);
         setStatus("success");
       } catch (error) {
         console.error("Verification failed:", error);

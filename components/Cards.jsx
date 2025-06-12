@@ -17,9 +17,9 @@ import SearchBar from "./userpage/SearchBar";
 const EDIT_LABEL = "✏️ Edit";
 const NOT_FOUND_LABEL = "📭 No posts found";
 const NOT_FOUND_DESCRIPTION =
-  "It seems like there are no stories available at the moment. Please check back later!";
+  "It seems like there are no Posts available at the moment. Please check back later!";
 
-const LOADING_LABEL = "🌀 Loading Stories...";
+const LOADING_LABEL = "🌀 Loading Posts...";
 const READ_MORE = "Explore →";
 
 export default function PremiumNewsCards() {
@@ -185,14 +185,16 @@ export default function PremiumNewsCards() {
         )}
 
         {/* News Grid */}
-        {posts.length > 0 ? (
+        <SearchBar posts={posts} onSearchResults={setFilteredPosts} />
+
+        {filteredPosts.length > 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.8 }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
           >
-            {posts
+            {filteredPosts
               .filter((post) => post.$id !== featuredPost?.$id)
               .map((post, index) => (
                 <motion.div

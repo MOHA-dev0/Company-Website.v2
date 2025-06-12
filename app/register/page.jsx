@@ -3,11 +3,6 @@ import { useState } from "react";
 import { account, ID } from "@/app/utils/appwrite";
 import { useRouter } from "next/navigation";
 import { db } from "../utils/database";
-import emailjs from "@emailjs/browser";
-
-const EMAILJS_SERVICE_ID = "service_1xixbzc";
-const EMAILJS_TEMPLATE_ID = "template_4qrn2ro";
-const EMAILJS_PUBLIC_KEY = "LjRRg9g-WXfvsDast";
 
 const REGISTER_TITLE = "Register";
 const EMAIL_PLACEHOLDER = "Email";
@@ -29,28 +24,6 @@ const RegisterPage = () => {
 
   const router = useRouter();
 
-  const sendVerificationEmail = async (
-    userEmail,
-    userName,
-    verificationLink
-  ) => {
-    const templateParams = {
-      user_name: userName,
-      user_email: userEmail,
-      activation_link: verificationLink,
-    };
-
-    try {
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        templateParams,
-        EMAILJS_PUBLIC_KEY
-      );
-    } catch (err) {
-      console.error("Failed to send email:", err);
-    }
-  };
   const generateSecret = () => Math.random().toString(36).substring(2, 16);
 
   const register = async () => {
@@ -77,13 +50,9 @@ const RegisterPage = () => {
 
       await account.createEmailPasswordSession(email, password);
 
-      const verification = await account.createVerification(
+      await account.createVerification(
         `${process.env.NEXT_PUBLIC_APP_URL}/verify`
       );
-
-      const verificationLink = `${process.env.NEXT_PUBLIC_APP_URL}/verify?userId=${authUser.$id}&secret=${secret}`;
-
-      await sendVerificationEmail(email, name, verificationLink);
 
       await account.deleteSession("current");
 
@@ -98,7 +67,7 @@ const RegisterPage = () => {
       );
 
       setSuccessMessage(
-        "Registration successful! A verification link has been sent to your email."
+        "Registration successful! Please check your email to verify your account."
       );
     } catch (e) {
       console.error("Registration error:", e);

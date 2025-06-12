@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
 
+const SEARCH_BAR_TITLE = "Search Posts....";
+
 const SearchBar = ({ posts, onSearchResults }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -35,7 +37,7 @@ const SearchBar = ({ posts, onSearchResults }) => {
         />
         <Input
           type="text"
-          placeholder="Search stories..."
+          placeholder={SEARCH_BAR_TITLE}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}

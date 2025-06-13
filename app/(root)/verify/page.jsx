@@ -1,9 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { account } from "@/app/utils/appwrite";
 
-export default function VerifyPage() {
+function VerifyContent() {
   const searchParams = useSearchParams();
   const secret = searchParams.get("secret");
   const userId = searchParams.get("userId");
@@ -78,5 +79,13 @@ export default function VerifyPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function VerifyPage() {
+  return (
+    <Suspense fallback={<div className="text-center p-10">Loading...</div>}>
+      <VerifyContent />
+    </Suspense>
   );
 }

@@ -71,7 +71,8 @@ const LoginPage = () => {
 
   const loginWithGoogle = async () => {
     await account.deleteSession("current").catch(() => {});
-    const redirectURL = "http://localhost:3000/oauth/callback";
+    const redirectURL =
+      "https://company-website-v2-neon.vercel.app//oauth/callback";
 
     account.createOAuth2Session(
       "google",
@@ -82,7 +83,8 @@ const LoginPage = () => {
 
   const loginWithGitHub = async () => {
     await account.deleteSession("current").catch(() => {});
-    const redirectURL = "http://localhost:3000/oauth/callback";
+    const redirectURL =
+      "https://company-website-v2-neon.vercel.app//oauth/callback";
 
     try {
       await account.deleteSession("current");

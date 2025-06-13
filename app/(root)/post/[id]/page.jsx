@@ -78,7 +78,6 @@ export default function NewsDetail() {
         postId: post.$id,
         userId: user.$id,
         userName: user.name || "Anonymous",
-        userEmail: user.email,
         content: newComment,
       });
 

@@ -62,6 +62,12 @@ export default function ResetConfirmPage() {
       >
         Reset Password
       </button>
+      <span>
+        {" "}
+        <a className="text-blue-800" href="/login">
+          Go to Login
+        </a>
+      </span>
     </div>
   );
 }

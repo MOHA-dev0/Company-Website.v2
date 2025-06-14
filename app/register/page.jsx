@@ -4,16 +4,6 @@ import { account, ID } from "@/app/utils/appwrite";
 import { useRouter } from "next/navigation";
 import { db } from "../utils/database";
 
-const REGISTER_TITLE = "Register";
-const EMAIL_PLACEHOLDER = "Email";
-const USERNAME_PLACEHOLDER = "Username";
-const PASSWORD_PLACEHOLDER = "Password";
-const LOGIN_TEXT = "Already have an account? ";
-const LOGIN_LINK_TEXT = "Login";
-const REGISTER_BUTTON_TEXT = "Register";
-
-const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
-
 const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -25,6 +15,7 @@ const RegisterPage = () => {
   const router = useRouter();
 
   const generateSecret = () => Math.random().toString(36).substring(2, 16);
+  const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
   const register = async () => {
     setError(null);
@@ -48,13 +39,9 @@ const RegisterPage = () => {
 
       const authUser = await account.create(ID.unique(), email, password, name);
 
-      await account.createEmailPasswordSession(email, password);
-
       await account.createVerification(
         `${process.env.NEXT_PUBLIC_APP_URL}/verify`
       );
-
-      await account.deleteSession("current");
 
       await db.users.create(
         {
@@ -74,6 +61,10 @@ const RegisterPage = () => {
 
       if (e.message?.includes("already exists")) {
         setError("This email is already registered.");
+      } else if (e.code === 400 && e.message.includes("Invalid `url` param")) {
+        setError(
+          "Verification URL is invalid. Use a trusted domain (e.g., localhost or *.appwrite.io)."
+        );
       } else {
         setError("Registration failed. Please try again.");
       }
@@ -85,7 +76,7 @@ const RegisterPage = () => {
   return (
     <div className="flex flex-col gap-6 max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg mt-12">
       <h2 className="text-2xl font-semibold text-center text-gray-800">
-        {REGISTER_TITLE}
+        Register
       </h2>
 
       {error && (
@@ -100,30 +91,30 @@ const RegisterPage = () => {
 
       <input
         type="email"
-        placeholder={EMAIL_PLACEHOLDER}
+        placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <input
         type="text"
-        placeholder={USERNAME_PLACEHOLDER}
+        placeholder="Username"
         value={name}
         onChange={(e) => setName(e.target.value)}
         className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <input
         type="password"
-        placeholder={PASSWORD_PLACEHOLDER}
+        placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
 
       <span className="text-sm text-gray-600">
-        {LOGIN_TEXT}
+        Already have an account?{" "}
         <a href="/login" className="text-blue-600 hover:underline">
-          {LOGIN_LINK_TEXT}
+          Login
         </a>
       </span>
 
@@ -136,7 +127,7 @@ const RegisterPage = () => {
             : "bg-blue-600 hover:bg-blue-700"
         } transition duration-300`}
       >
-        {loading ? "Registering..." : REGISTER_BUTTON_TEXT}
+        {loading ? "Registering..." : "Register"}
       </button>
     </div>
   );

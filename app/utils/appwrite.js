@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 "use client";
 import {
   Client,
@@ -9,6 +10,10 @@ import {
   Query,
   Permission,
 } from "appwrite";
+=======
+import { Client, Databases, Account, ID, Teams, Storage } from "appwrite";
+
+>>>>>>> Admin-Recive-Message#5
 const client = new Client();
 
 client
@@ -19,7 +24,11 @@ const account = new Account(client);
 const teams = new Teams(client);
 const storage = new Storage(client);
 
+<<<<<<< HEAD
 export { client, database, account, ID, teams, storage, Query, Permission };
+=======
+export { client, database, account, ID, teams, storage };
+>>>>>>> Admin-Recive-Message#5
 
 export async function publishPost({ title, description, image }) {
   try {

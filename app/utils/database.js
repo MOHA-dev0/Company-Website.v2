@@ -1,5 +1,9 @@
 import { database } from "./appwrite";
+<<<<<<< HEAD
 import { ID, Query } from "appwrite";
+=======
+import { ID } from "appwrite";
+>>>>>>> Admin-Recive-Message#5
 
 const collections = [
   {
@@ -12,6 +16,7 @@ const collections = [
     id: process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_MESSAGES_ID,
     name: "messages",
   },
+<<<<<<< HEAD
   {
     databaseId: process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
     id: process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_COMMENTS_ID,
@@ -27,6 +32,8 @@ const collections = [
     id: process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_GITHUB_ID,
     name: "github",
   },
+=======
+>>>>>>> Admin-Recive-Message#5
 ];
 
 const db = {};
@@ -41,6 +48,7 @@ collections.forEach((col) => {
 
     get: (id) => database.getDocument(col.databaseId, col.id, id),
 
+<<<<<<< HEAD
     list: (queries = []) =>
       database.listDocuments(col.databaseId, col.id, queries),
 
@@ -54,3 +62,12 @@ collections.forEach((col) => {
 });
 
 export { db, Query };
+=======
+    list: (queries) => database.listDocuments(col.databaseId, col.id, queries),
+
+    delete: (id) => database.deleteDocument(col.databaseId, col.id, id),
+  };
+});
+
+export { db };
+>>>>>>> Admin-Recive-Message#5

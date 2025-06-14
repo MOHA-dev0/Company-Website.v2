@@ -1,6 +1,10 @@
 "use client";
+<<<<<<< HEAD
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
+=======
+import { useEffect, useState } from "react";
+>>>>>>> Admin-Recive-Message#5
 import {
   Card,
   CardHeader,
@@ -10,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { db } from "@/app/utils/database";
+<<<<<<< HEAD
 import { account, teams } from "@/app/utils/appwrite";
 import Link from "next/link";
 import SearchBar from "./userpage/SearchBar";
@@ -49,23 +54,44 @@ export default function PremiumNewsCards() {
       card.style.boxShadow = "0 10px 30px -5px rgba(0,0,0,0.1)";
     }
   };
+=======
+import { account, ID, teams } from "@/app/utils/appwrite";
+import Link from "next/link";
+
+const EDIT_LABEL = "Edit";
+const NOT_FOUND_LABEL = "No posts found.";
+const LODING_LABEL = "Loading...";
+
+export default function Cards() {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+>>>>>>> Admin-Recive-Message#5
 
   useEffect(() => {
     async function fetchPosts() {
       try {
         const response = await db.posts.list();
+<<<<<<< HEAD
         const sortedPosts = [...response.documents].sort(
           (a, b) => new Date(b.$createdAt) - new Date(a.$createdAt)
         );
         setPosts(sortedPosts);
         setFilteredPosts(sortedPosts);
         setFeaturedPost(sortedPosts[0]);
+=======
+        setPosts(response.documents);
+>>>>>>> Admin-Recive-Message#5
       } catch (error) {
         console.error("Error fetching posts:", error);
       } finally {
         setLoading(false);
       }
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> Admin-Recive-Message#5
     fetchPosts();
   }, []);
 
@@ -74,15 +100,27 @@ export default function PremiumNewsCards() {
       try {
         const user = await account.get();
         const userTeams = await teams.list();
+<<<<<<< HEAD
         setIsAdmin(userTeams.teams.some((team) => team.name === "admins"));
+=======
+
+        if (userTeams.teams.some((team) => team.name === "admins")) {
+          setIsAdmin(true);
+        }
+>>>>>>> Admin-Recive-Message#5
       } catch (error) {
         console.error("Error checking admin status:", error);
       }
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> Admin-Recive-Message#5
     checkAdmin();
   }, []);
 
   if (loading) {
+<<<<<<< HEAD
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-100">
         <motion.div
@@ -285,6 +323,47 @@ export default function PremiumNewsCards() {
           </div>
         )}
       </div>
+=======
+    return <p className="text-center text-gray-600">{LODING_LABEL}</p>;
+  }
+
+  return (
+    <div className="flex flex-wrap gap-4 justify-start">
+      {posts.length > 0 ? (
+        posts.map((post) => (
+          <Card key={post.$id} className="w-80 shadow-lg rounded-2xl">
+            <CardHeader className="text-center">
+              <CardTitle className="text-xl font-bold">{post.title}</CardTitle>
+            </CardHeader>
+
+            <CardContent className="flex justify-center">
+              <img
+                src={post.image}
+                alt={post.title}
+                className="w-40 h-40 object-cover rounded-lg"
+              />
+            </CardContent>
+
+            <CardContent>
+              <CardDescription className="text-center text-gray-600">
+                {post.description}
+              </CardDescription>
+            </CardContent>
+            {isAdmin && (
+              <CardContent>
+                <Button>
+                  <Link href={`/posts/${post.$id}`}>{EDIT_LABEL}</Link>
+                </Button>
+              </CardContent>
+            )}
+          </Card>
+        ))
+      ) : (
+        <p className="text-center col-span-3 text-gray-600">
+          {NOT_FOUND_LABEL}
+        </p>
+      )}
+>>>>>>> Admin-Recive-Message#5
     </div>
   );
 }

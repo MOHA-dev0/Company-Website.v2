@@ -1,15 +1,23 @@
 "use client";
 import React, { useState, useEffect } from "react";
+<<<<<<< HEAD
 import { account, teams } from "@/app/utils/appwrite";
+=======
+import { account } from "@/app/utils/appwrite";
+>>>>>>> Admin-Recive-Message#5
 import { useRouter } from "next/navigation";
 import Cards from "@/components/Cards";
 import Navbar from "@/components/NavBar";
 import ReciveMessage from "@/components/adminpage/ReciveMessage";
+<<<<<<< HEAD
 import UsersList from "@/components/adminpage/UsersList";
+=======
+>>>>>>> Admin-Recive-Message#5
 
 export default function AdminPage() {
   const router = useRouter();
   const [userInfo, setUserInfo] = useState(null);
+<<<<<<< HEAD
   const [isAdmin, setIsAdmin] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
@@ -39,10 +47,21 @@ export default function AdminPage() {
     };
 
     fetchUserAndCheckAdmin();
+=======
+  const [showMessages, setShowMessages] = useState(false);
+
+  useEffect(() => {
+    const user = account.get();
+    user.then(
+      (res) => setUserInfo(res),
+      () => router.push("/login")
+    );
+>>>>>>> Admin-Recive-Message#5
   }, [router]);
 
   const handleToggleMessages = () => {
     setShowMessages((prev) => !prev);
+<<<<<<< HEAD
     setShowUsers(false);
   };
 
@@ -78,6 +97,20 @@ export default function AdminPage() {
           <Cards />
         )}
       </main>
+=======
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100">
+      <Navbar
+        admin={true}
+        onToggle={handleToggleMessages}
+        clicked={showMessages}
+      />
+      <div className="pt-24 px-6 py-4">
+        {showMessages ? <ReciveMessage /> : <Cards />}
+      </div>
+>>>>>>> Admin-Recive-Message#5
     </div>
   );
 }

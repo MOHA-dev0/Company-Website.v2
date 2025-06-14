@@ -14,11 +14,8 @@ pnpm dev
 bun dev
 ```
 
-<<<<<<< HEAD
 Open [https://company-website-v2-neon.vercel.app/](https://company-website-v2-neon.vercel.app/) with your browser to see the result.
-=======
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
->>>>>>> Admin-Recive-Message#5
 
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 

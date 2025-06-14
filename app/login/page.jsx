@@ -1,43 +1,25 @@
 "use client";
-<<<<<<< HEAD
 
 import { useState } from "react";
-import { account } from "@/app/utils/appwrite";
+import { account, teams } from "@/app/utils/appwrite";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
-import { teams } from "@/app/utils/appwrite";
-=======
-import { useState } from "react";
-import { account, ID, teams } from "@/app/utils/appwrite";
-import { useRouter } from "next/navigation";
-
-// Global Constants
-const LOGIN_TITLE = "Login";
-const EMAIL_PLACEHOLDER = "Email";
-const PASSWORD_PLACEHOLDER = "Password";
-const REGISTER_TEXT = "Don't have an account?";
-const REGISTER_LINK_TEXT = "Register";
-const LOGIN_BUTTON_TEXT = "Login";
->>>>>>> Admin-Recive-Message#5
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-<<<<<<< HEAD
-<<<<<<< HEAD
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const LOGIN_TITLE = "Login";
-  const EMAIL_TITLE = "Email";
-  const REGISTER_TITLE = "Register";
   const EMAIL_PLACEHOLDER = "Email";
   const PASSWORD_PLACEHOLDER = "Password";
   const GOOGLE_LOGIN_BUTTON_TEXT = "Continue with Google";
   const GITHUB_LOGIN_BUTTON_TEXT = "Continue with GitHub";
   const REGISTER_TEXT = "Don't have an account? ";
+  const REGISTER_TITLE = "Register";
   const FORGET_PASSWORD_TEXT = "Forgot your password?";
 
   const login = async () => {
@@ -45,50 +27,24 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
+      // Delete any existing session
       await account.deleteSession("current").catch(() => {});
 
+      // Create session
       await account.createEmailPasswordSession(email, password);
+
+      // Delay to ensure session is active
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       const user = await account.get();
 
       if (!user.emailVerification) {
-        setError(
-          "Your account is not verified. Please check your email to activate your account."
-        );
+        setError("Your account is not verified. Please check your email.");
         await account.deleteSession("current");
         return;
-=======
-  const [error, setError] = useState(null);
-=======
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
->>>>>>> Login-Page-Bugs-#8
-
-  const router = useRouter();
-
-  const login = async () => {
-    setError(null);
-    setLoading(true);
-
-    try {
-<<<<<<< HEAD
-      let user;
-      try {
-        user = await account.get();
-      } catch {
-        await account.createEmailPasswordSession(email, password);
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        user = await account.get();
->>>>>>> Admin-Recive-Message#5
       }
-=======
-      await account.createEmailPasswordSession(email, password);
 
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const user = await account.get();
->>>>>>> Login-Page-Bugs-#8
-
+      // Try to get user teams
       let userTeams = null;
       for (let i = 0; i < 3; i++) {
         try {
@@ -96,12 +52,10 @@ const LoginPage = () => {
           if (userTeams.teams.length > 0) break;
         } catch (teamError) {
           console.warn("Failed to fetch teams, retrying...", teamError);
+          await new Promise((resolve) => setTimeout(resolve, 500));
         }
-        await new Promise((resolve) => setTimeout(resolve, 500));
       }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
       const isAdmin = userTeams?.teams?.some((team) => team.name === "admins");
 
       if (isAdmin) {
@@ -125,7 +79,6 @@ const LoginPage = () => {
     await account.deleteSession("current").catch(() => {});
     const redirectURL =
       "https://company-website-v2-git-deploying-moha-dev0s-projects.vercel.app/oauth/callback";
-
     account.createOAuth2Session(
       "google",
       redirectURL,
@@ -137,40 +90,9 @@ const LoginPage = () => {
     await account.deleteSession("current").catch(() => {});
     const redirectURL =
       "https://company-website-v2-git-deploying-moha-dev0s-projects.vercel.app/oauth/callback";
-
-    try {
-      await account.deleteSession("current");
-      console.log("Deleted current session");
-    } catch (err) {
-      console.warn("No active session to delete");
-    }
-
     account.createOAuth2Session("github", redirectURL, redirectURL);
   };
 
-=======
-      if (userTeams.teams.some((team) => team.name === "admins")) {
-        router.push(`/admin`);
-=======
-      if (userTeams?.teams?.some((team) => team.name === "admins")) {
-        router.push("/admin");
->>>>>>> Login-Page-Bugs-#8
-      } else {
-        router.push(`/profile/${user.$id}`);
-      }
-    } catch (err) {
-      if (err?.message?.includes("invalid credentials")) {
-        setError("Incorrect email or password.");
-      } else {
-        setError("Login failed. Please try again.");
-      }
-      console.error("Login error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
->>>>>>> Admin-Recive-Message#5
   return (
     <div className="flex flex-col gap-6 max-w-md mx-auto p-4 bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
@@ -198,8 +120,6 @@ const LoginPage = () => {
         onChange={(e) => setPassword(e.target.value)}
         className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
       />
-<<<<<<< HEAD
-<<<<<<< HEAD
 
       <span>
         {REGISTER_TEXT}{" "}
@@ -207,25 +127,15 @@ const LoginPage = () => {
           {REGISTER_TITLE}
         </a>
       </span>
+
       <span>
         <a className="text-blue-800" href="/rest-password">
           {FORGET_PASSWORD_TEXT}
-=======
-=======
-
->>>>>>> Login-Page-Bugs-#8
-      <span>
-        {REGISTER_TEXT}{" "}
-        <a className="text-blue-800" href="/register">
-          {REGISTER_LINK_TEXT}
->>>>>>> Admin-Recive-Message#5
         </a>
       </span>
 
       <button
         onClick={login}
-<<<<<<< HEAD
-<<<<<<< HEAD
         disabled={loading}
         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 disabled:opacity-50"
       >
@@ -246,17 +156,6 @@ const LoginPage = () => {
       >
         <FaGithub className="text-xl" />
         {GITHUB_LOGIN_BUTTON_TEXT}
-=======
-        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
-      >
-        {LOGIN_BUTTON_TEXT}
->>>>>>> Admin-Recive-Message#5
-=======
-        disabled={loading}
-        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 disabled:opacity-50"
-      >
-        {loading ? "Logging in..." : LOGIN_BUTTON_TEXT}
->>>>>>> Login-Page-Bugs-#8
       </button>
     </div>
   );

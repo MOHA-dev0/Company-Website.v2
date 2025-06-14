@@ -3,6 +3,7 @@ import { useState } from "react";
 import { account, ID } from "@/app/utils/appwrite";
 import { useRouter } from "next/navigation";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { db } from "../utils/database";
 
 const REGISTER_TITLE = "Register";
@@ -14,6 +15,9 @@ const LOGIN_LINK_TEXT = "Login";
 const REGISTER_BUTTON_TEXT = "Register";
 
 =======
+=======
+import { db } from "../utils/database";
+>>>>>>> Users-In-DashBoard-2-#9
 
 // Global Constants
 const REGISTER_TITLE = "Register";
@@ -73,6 +77,7 @@ const RegisterPage = () => {
 
     try {
 <<<<<<< HEAD
+<<<<<<< HEAD
       const secret = generateSecret();
 
       const authUser = await account.create(ID.unique(), email, password, name);
@@ -86,15 +91,24 @@ const RegisterPage = () => {
       await account.deleteSession("current");
 
       await db.users.create(
+=======
+      const authUser = await account.create(ID.unique(), email, password, name);
+
+      const response = await db.users.create(
+>>>>>>> Users-In-DashBoard-2-#9
         {
           username: name,
           email: email,
           authId: authUser.$id,
+<<<<<<< HEAD
           secret: secret,
+=======
+>>>>>>> Users-In-DashBoard-2-#9
         },
         authUser.$id
       );
 
+<<<<<<< HEAD
       setSuccessMessage(
         "Registration successful! Please check your email to verify your account."
       );
@@ -116,11 +130,28 @@ const RegisterPage = () => {
       <h2 className="text-2xl font-semibold text-center text-gray-800">
 =======
       await account.create(ID.unique(), email, password, name);
+=======
+      await account.createEmailPasswordSession(email, password);
+
+>>>>>>> Users-In-DashBoard-2-#9
       setSuccessMessage("Registration successful! Redirecting...");
-      setTimeout(() => router.push(`/profile/${ID}`), 2000);
+      setTimeout(() => router.push(`/profile/${authUser.$id}`), 2000);
     } catch (e) {
-      setError(e.message);
-      console.error(e);
+      console.error("Registration error:", e);
+
+      if (e.message.includes("already exists")) {
+        setError("This email is already registered.");
+      } else {
+        setError("Registration failed. Please try again.");
+      }
+
+      if (authUser) {
+        try {
+          await account.delete(authUser.$id);
+        } catch (cleanupError) {
+          console.error("Cleanup error:", cleanupError);
+        }
+      }
     }
   }
 

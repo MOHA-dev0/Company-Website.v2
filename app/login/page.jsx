@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 const LOGIN_TITLE = "Login";
 const EMAIL_PLACEHOLDER = "Email";
 const PASSWORD_PLACEHOLDER = "Password";
-const REGISTER_TEXT = "don't have an account? ";
+const REGISTER_TEXT = "Don't have an account?";
 const REGISTER_LINK_TEXT = "Register";
 const LOGIN_BUTTON_TEXT = "Login";
 >>>>>>> Admin-Recive-Message#5
@@ -24,6 +24,7 @@ const LOGIN_BUTTON_TEXT = "Login";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+<<<<<<< HEAD
 <<<<<<< HEAD
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -58,11 +59,19 @@ const LoginPage = () => {
         return;
 =======
   const [error, setError] = useState(null);
+=======
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+>>>>>>> Login-Page-Bugs-#8
 
   const router = useRouter();
 
   const login = async () => {
+    setError(null);
+    setLoading(true);
+
     try {
+<<<<<<< HEAD
       let user;
       try {
         user = await account.get();
@@ -72,14 +81,26 @@ const LoginPage = () => {
         user = await account.get();
 >>>>>>> Admin-Recive-Message#5
       }
+=======
+      await account.createEmailPasswordSession(email, password);
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      const user = await account.get();
+>>>>>>> Login-Page-Bugs-#8
 
       let userTeams = null;
       for (let i = 0; i < 3; i++) {
-        userTeams = await teams.list();
-        if (userTeams.teams.length > 0) break;
+        try {
+          userTeams = await teams.list();
+          if (userTeams.teams.length > 0) break;
+        } catch (teamError) {
+          console.warn("Failed to fetch teams, retrying...", teamError);
+        }
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
       const isAdmin = userTeams?.teams?.some((team) => team.name === "admins");
 
@@ -130,12 +151,22 @@ const LoginPage = () => {
 =======
       if (userTeams.teams.some((team) => team.name === "admins")) {
         router.push(`/admin`);
+=======
+      if (userTeams?.teams?.some((team) => team.name === "admins")) {
+        router.push("/admin");
+>>>>>>> Login-Page-Bugs-#8
       } else {
         router.push(`/profile/${user.$id}`);
       }
-    } catch (loginError) {
-      setError("Invalid email or password");
-      console.error("Login failed:", loginError);
+    } catch (err) {
+      if (err?.message?.includes("invalid credentials")) {
+        setError("Incorrect email or password.");
+      } else {
+        setError("Login failed. Please try again.");
+      }
+      console.error("Login error:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -168,6 +199,7 @@ const LoginPage = () => {
         className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
       />
 <<<<<<< HEAD
+<<<<<<< HEAD
 
       <span>
         {REGISTER_TEXT}{" "}
@@ -179,6 +211,9 @@ const LoginPage = () => {
         <a className="text-blue-800" href="/rest-password">
           {FORGET_PASSWORD_TEXT}
 =======
+=======
+
+>>>>>>> Login-Page-Bugs-#8
       <span>
         {REGISTER_TEXT}{" "}
         <a className="text-blue-800" href="/register">
@@ -189,6 +224,7 @@ const LoginPage = () => {
 
       <button
         onClick={login}
+<<<<<<< HEAD
 <<<<<<< HEAD
         disabled={loading}
         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 disabled:opacity-50"
@@ -215,6 +251,12 @@ const LoginPage = () => {
       >
         {LOGIN_BUTTON_TEXT}
 >>>>>>> Admin-Recive-Message#5
+=======
+        disabled={loading}
+        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 disabled:opacity-50"
+      >
+        {loading ? "Logging in..." : LOGIN_BUTTON_TEXT}
+>>>>>>> Login-Page-Bugs-#8
       </button>
     </div>
   );

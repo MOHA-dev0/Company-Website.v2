@@ -17,11 +17,15 @@ const collections = [
     name: "messages",
   },
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Login-Page-Bugs-#8
   {
     databaseId: process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
     id: process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_COMMENTS_ID,
     name: "comments",
   },
+<<<<<<< HEAD
   {
     databaseId: process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
     id: process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_USERS_ID,
@@ -34,6 +38,8 @@ const collections = [
   },
 =======
 >>>>>>> Admin-Recive-Message#5
+=======
+>>>>>>> Login-Page-Bugs-#8
 ];
 
 const db = {};

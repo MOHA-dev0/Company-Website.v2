@@ -12,8 +12,11 @@ import {
 } from "appwrite";
 =======
 import { Client, Databases, Account, ID, Teams, Storage } from "appwrite";
+<<<<<<< HEAD
 
 >>>>>>> Admin-Recive-Message#5
+=======
+>>>>>>> Login-Page-Bugs-#8
 const client = new Client();
 
 client

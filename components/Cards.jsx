@@ -335,20 +335,21 @@ export default function Cards() {
             <CardHeader className="text-center">
               <CardTitle className="text-xl font-bold">{post.title}</CardTitle>
             </CardHeader>
+            <Link href={`/post/${post.$id}`}>
+              <CardContent className="flex justify-center">
+                <img
+                  src={post.image}
+                  alt={post.title}
+                  className="w-40 h-40 object-cover rounded-lg"
+                />
+              </CardContent>
 
-            <CardContent className="flex justify-center">
-              <img
-                src={post.image}
-                alt={post.title}
-                className="w-40 h-40 object-cover rounded-lg"
-              />
-            </CardContent>
-
-            <CardContent>
-              <CardDescription className="text-center text-gray-600">
-                {post.description}
-              </CardDescription>
-            </CardContent>
+              <CardContent>
+                <CardDescription className="text-center text-gray-600">
+                  {post.description}
+                </CardDescription>
+              </CardContent>
+            </Link>
             {isAdmin && (
               <CardContent>
                 <Button>

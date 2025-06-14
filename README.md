@@ -1,37 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# COMPANY-WEBSITE.V2More actions
+
+*Empower Your Vision with Seamless Digital Experiences*
+
+![last-commit](https://img.shields.io/github/last-commit/MOHA-dev0/Company-Website.v2?style=flat&logo=git&logoColor=white&color=0080ff)
+![repo-top-language](https://img.shields.io/github/languages/top/MOHA-dev0/Company-Website.v2?style=flat&color=0080ff)
+![repo-language-count](https://img.shields.io/github/languages/count/MOHA-dev0/Company-Website.v2?style=flat&color=0080ff)
+
+*Built with the tools and technologies:*
+
+![JSON](https://img.shields.io/badge/JSON-000000.svg?style=flat&logo=JSON&logoColor=white)
+![Markdown](https://img.shields.io/badge/Markdown-000000.svg?style=flat&logo=Markdown&logoColor=white)
+![npm](https://img.shields.io/badge/npm-CB3837.svg?style=flat&logo=npm&logoColor=white)
+![PostCSS](https://img.shields.io/badge/PostCSS-DD3A0A.svg?style=flat&logo=PostCSS&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E.svg?style=flat&logo=JavaScript&logoColor=black)
+![React](https://img.shields.io/badge/React-61DAFB.svg?style=flat&logo=React&logoColor=black)
+![Yarn](https://img.shields.io/badge/Yarn-2C8EBB.svg?style=flat&logo=Yarn&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-4B32C3.svg?style=flat&logo=ESLint&logoColor=white)
+![Appwrite](https://img.shields.io/badge/Appwrite-FD366E.svg?style=flat&logo=Appwrite&logoColor=white)
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Testing](#testing)
+
+
+---
+
+## Overview
+
+Company-Website.v2 is a robust developer tool designed to streamline the creation of Next.js applications with a focus on performance and maintainability.
+
+**Why Company-Website.v2?**
+
+This project enhances web development by providing a comprehensive toolkit that simplifies common tasks and promotes best practices. The core features include:
+
+- 🎨 **ESLint Configuration:** Ensures consistent code quality and adherence to best practices, facilitating collaboration.
+- ⚙️ **Next.js Customization:** Central configuration point for tailoring application behavior, enhancing functionality.
+- 🌈 **Tailwind CSS Integration:** Streamlines styling with a utility-first approach, promoting rapid development and design consistency.
+- 🔄 **Reusable UI Components:** Modular components enhance maintainability and promote a cohesive user interface.
+- 🗄️ **Database Utilities:** Simplifies CRUD operations, improving code maintainability and database management.
+- 🔐 **User Authentication:** Secure login and registration processes enhance user experience and access control.
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This project requires the following dependencies:
 
-Open [https://company-website-v2-neon.vercel.app/](https://company-website-v2-neon.vercel.app/) with your browser to see the result.
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Programming Language:** JavaScript
+- **Package Manager:** Yarn, Npm
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### Installation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Build Company-Website.v2 from the source and install dependencies:
 
-## Learn More
+1. **Clone the repository:**
+   ```sh
+   git clone https://github.com/MOHA-dev0/Company-Website.v2
 
-To learn more about Next.js, take a look at the following resources:
+2. **Navigate to the project directory**
+    ```sh
+    cd Company-Website.v2
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Start the development server:**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Using Yarn:**
+```sh
+    yarn start

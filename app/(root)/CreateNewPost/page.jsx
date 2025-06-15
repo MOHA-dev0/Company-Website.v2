@@ -71,7 +71,7 @@ export default function CreateNewPost() {
           throw new Error("Image upload failed");
         }
 
-        imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/67c473c5000b71ec23e0/files/${uploadResponse.$id}/view?project=67b9cb2500144405cbac&mode=admin`;
+        imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/67c473c5000b71ec23e0/files/${uploadResponse.$id}/view?project=67b9cb2500144405cbac`;
       } else {
         throw new Error(IMAGE_REQUIRED_ERROR);
       }

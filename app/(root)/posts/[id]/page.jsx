@@ -67,7 +67,7 @@ export default function EditPost() {
         if (!uploadResponse || !uploadResponse.$id) {
           throw new Error("Image upload failed");
         }
-        const imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/67c473c5000b71ec23e0/files/${uploadResponse.$id}/view?project=67b9cb2500144405cbac&mode=admin`;
+        const imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/67c473c5000b71ec23e0/files/${uploadResponse.$id}/view?project=67b9cb2500144405cbac`;
         updates.image = imageUrl;
 
         if (imageId) {

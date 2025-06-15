@@ -77,8 +77,7 @@ const LoginPage = () => {
 
   const loginWithGoogle = async () => {
     await account.deleteSession("current").catch(() => {});
-    const redirectURL =
-      "https://company-website-v2-neon.vercel.app/oauth/callback";
+    const redirectURL = "https://newshub.solexad.com/oauth/callback";
     account.createOAuth2Session(
       "google",
       redirectURL,
@@ -88,8 +87,7 @@ const LoginPage = () => {
 
   const loginWithGitHub = async () => {
     await account.deleteSession("current").catch(() => {});
-    const redirectURL =
-      "https://company-website-v2-neon.vercel.app/oauth/callback";
+    const redirectURL = "https://newshub.solexad.com/oauth/callback";
     account.createOAuth2Session("github", redirectURL, redirectURL);
   };
 

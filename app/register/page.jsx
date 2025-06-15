@@ -46,16 +46,28 @@ const RegisterPage = () => {
     try {
       const secret = generateSecret();
 
+      // ✅ حاول تحذف أي جلسة موجودة قبل البدء
+      try {
+        await account.deleteSession("current");
+      } catch (err) {
+        // تجاهل الخطأ لو ما فيه جلسة
+      }
+
+      // ✅ إنشاء المستخدم
       const authUser = await account.create(ID.unique(), email, password, name);
 
+      // ✅ إنشاء جلسة جديدة بعد حذف أي جلسة سابقة
       await account.createEmailPasswordSession(email, password);
 
+      // ✅ إرسال رابط تحقق للإيميل
       await account.createVerification(
         `${process.env.NEXT_PUBLIC_APP_URL}/verify`
       );
 
+      // ❌ حذف الجلسة إذا ما بدك المستخدم يضل مسجل دخوله بعد التسجيل
       await account.deleteSession("current");
 
+      // ✅ حفظ بيانات المستخدم في قاعدة البيانات
       await db.users.create(
         {
           username: name,
